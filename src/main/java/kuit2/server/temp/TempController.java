@@ -93,4 +93,14 @@ public class TempController {
         return userData;
     }
 
+    @PostMapping("/user-add-test")
+    public String addUser(@RequestBody UserData userData) {
+        // 이 부분에서 userData 객체는 클라이언트로부터 받은 JSON 데이터로 초기화되어 있음
+        System.out.println("닉네임: " + userData.getNickname());
+        System.out.println("나이: " + userData.getAge());
+        // 비즈니스 로직 처리...
+        return "사용자 등록 완료";
+    }
+
+
 }
