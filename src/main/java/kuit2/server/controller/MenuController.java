@@ -20,6 +20,9 @@ public class MenuController {
 
     private final MenuService menuService;
 
+    /**
+     * 메뉴 조회
+     */
     @GetMapping("/{storeId}")
     public BaseResponse<List<GetMenuResponse>> getMenus(@PathVariable String category, @PathVariable long storeId) {
         log.info("MenuController.getMenus");

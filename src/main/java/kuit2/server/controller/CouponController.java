@@ -20,6 +20,9 @@ public class CouponController {
 
     private final CouponService couponService;
 
+    /**
+     * 쿠폰 조회
+     */
     @GetMapping("/coupons")
     public BaseResponse<List<GetCouponResponse>> getCoupons(@PathVariable long userId) {
         log.info("[CouponController.getCoupons]");

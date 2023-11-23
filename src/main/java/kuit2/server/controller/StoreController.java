@@ -30,9 +30,14 @@ public class StoreController {
         return new BaseResponse<>(storeService.getCategories());
     }
 
+    /**
+    * 가게 목록 조회
+     */
     @GetMapping("/{category}")
     public BaseResponse<List<GetStoreResponse>> getStores(@PathVariable String category) {
         log.info("[StoreController.getStores]");
         return new BaseResponse<>(storeService.getStores(category));
     }
+
+
 }
