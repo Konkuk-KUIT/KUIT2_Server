@@ -1,6 +1,6 @@
 package kuit2.server.dao;
 
-import kuit2.server.dto.GetMenuResponse;
+import kuit2.server.dto.menu.GetMenuResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;

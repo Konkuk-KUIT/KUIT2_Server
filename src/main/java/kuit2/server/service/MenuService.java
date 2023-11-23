@@ -1,7 +1,7 @@
 package kuit2.server.service;
 
 import kuit2.server.dao.MenuDao;
-import kuit2.server.dto.GetMenuResponse;
+import kuit2.server.dto.menu.GetMenuResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

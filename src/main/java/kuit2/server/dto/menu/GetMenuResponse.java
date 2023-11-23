@@ -1,4 +1,4 @@
-package kuit2.server.dto;
+package kuit2.server.dto.menu;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
