@@ -2,6 +2,7 @@ package kuit2.server.service;
 
 import kuit2.server.dao.StoreDao;
 import kuit2.server.dto.store.GetCategoryResponse;
+import kuit2.server.dto.store.GetStoreResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,4 +19,10 @@ public class StoreService {
         log.info("[StoreService.getCategories]");
         return storeDao.getCategories();
     }
+
+    public List<GetStoreResponse> getStores(String category) {
+        log.info("[StoreService.getStores]");
+        return storeDao.getStores(category);
+    }
+
 }
