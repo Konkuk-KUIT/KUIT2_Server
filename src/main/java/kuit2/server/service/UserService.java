@@ -1,5 +1,7 @@
 package kuit2.server.service;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import kuit2.server.common.exception.DatabaseException;
 import kuit2.server.common.exception.UserException;
 import kuit2.server.dao.UserDao;
@@ -45,6 +47,19 @@ public class UserService {
         String jwt = null;
 
         return new PostUserResponse(userId, jwt);
+    }
+
+    public Object login(PostLoginRequest postLoginRequest, HttpServletRequest request) {
+        log.info("[UserService.login]");
+
+        Long logginedUserId = userDao.getUserIdByEmail(postLoginRequest.getEmail());
+        if(passwordEncoder.matches(postLoginRequest.getPassword(), userDao.getPasswordByUserId(logginedUserId))){
+            HttpSession session = request.getSession();
+            session.setAttribute("user", logginedUserId);
+            return new PostUserResponse(logginedUserId, null);
+        }
+
+        throw new UserException(USER_NOT_FOUND);
     }
 
     public void modifyUserStatus_dormant(long userId) {
