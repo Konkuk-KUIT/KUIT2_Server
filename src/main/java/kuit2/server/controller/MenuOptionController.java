@@ -15,7 +15,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/stores/{category}/{storeId}/{menuId}/menu-option")
+@RequestMapping("/stores/{category}/{storeId}/{menuId}/menu-options")
 public class MenuOptionController {
 
     private final MenuOptionService menuOptionService;

@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class GetCouponResponse {
+    private String code;
     private String name;
     private long discount_price;
     private long min_order_price;

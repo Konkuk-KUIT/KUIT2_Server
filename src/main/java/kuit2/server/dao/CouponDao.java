@@ -20,12 +20,13 @@ public class CouponDao {
 
     public List<GetCouponResponse> getCoupons(long userId) {
         log.info("CouponDao.getCoupons");
-        String sql = "SELECT c.name, c.discount_price, c.min_order_price, c.deadline, c.status " +
+        String sql = "SELECT c.code, c.name, c.discount_price, c.min_order_price, c.deadline, c.status " +
                 "FROM coupon c JOIN user u ON c.user_id = u.user_id " +
                 "WHERE u.user_id = :user_id";
         Map<String, Object> param = Map.of("user_id", userId);
         return jdbcTemplate.query(sql, param,
                 (rs, rowNum) -> new GetCouponResponse(
+                        rs.getString("code"),
                         rs.getString("name"),
                         rs.getLong("discount_price"),
                         rs.getLong("min_order_price"),
