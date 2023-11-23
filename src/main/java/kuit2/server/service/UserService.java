@@ -74,6 +74,16 @@ public class UserService {
         }
     }
 
+    public void modifyEmail(long userId, String email) {
+        log.info("[UserService.modifyEmail]");
+
+        validateEmail(email);
+        int affectedRows = userDao.modifyEmail(userId, email);
+        if (affectedRows != 1) {
+            throw new DatabaseException(DATABASE_ERROR);
+        }
+    }
+
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
         log.info("[UserService.getUsers]");
         return userDao.getUsers(nickname, email, status);

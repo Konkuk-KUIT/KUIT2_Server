@@ -72,6 +72,14 @@ public class UserDao {
         return jdbcTemplate.update(sql, param);
     }
 
+    public int modifyEmail(long userId, String email) {
+        String sql = "update user set email=:email where user_id=:user_id";
+        Map<String, Object> param = Map.of(
+                "email", email,
+                "user_id", userId);
+        return jdbcTemplate.update(sql, param);
+    }
+
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
         String sql = "select email, phone_number, nickname, profile_image, status from user " +
                 "where nickname like :nickname and email like :email and status=:status";

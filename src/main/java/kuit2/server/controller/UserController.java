@@ -71,6 +71,20 @@ public class UserController {
     }
 
     /**
+     * 이메일 변경
+     */
+    @PatchMapping("/{userId}/email")
+    public BaseResponse<String> modifyEmail(@PathVariable long userId,
+                                               @Validated @RequestBody PatchEmailRequest patchEmailRequest, BindingResult bindingResult){
+        log.info("[UserController.modifyEmail]");
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+        userService.modifyEmail(userId, patchEmailRequest.getEmail());
+        return new BaseResponse<>(null);
+    }
+
+    /**
      * 회원 목록 조회
      */
     @GetMapping("")
