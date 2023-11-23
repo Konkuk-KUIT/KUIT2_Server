@@ -90,13 +90,13 @@ public class UserController {
      * 로그인
      */
     @PostMapping("/login")
-    public BaseResponse<Object> login(@Validated @RequestBody PostLoginRequest postLoginRequest, HttpServletRequest request, BindingResult bindingResult) {
+    public BaseResponse<Object> login(@Validated @RequestBody PostLoginRequest postLoginRequest, BindingResult bindingResult) {
         log.info("[UserController.login]");
 
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
-        return new BaseResponse<>(userService.login(postLoginRequest, request));
+        return new BaseResponse<>(userService.login(postLoginRequest));
 
     }
 }

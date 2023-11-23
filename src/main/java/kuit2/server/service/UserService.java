@@ -49,14 +49,12 @@ public class UserService {
         return new PostUserResponse(userId, jwt);
     }
 
-    public Object login(PostLoginRequest postLoginRequest, HttpServletRequest request) {
+    public PostLoginResponse login(PostLoginRequest postLoginRequest) {
         log.info("[UserService.login]");
 
         Long logginedUserId = userDao.getUserIdByEmail(postLoginRequest.getEmail());
-        if(passwordEncoder.matches(postLoginRequest.getPassword(), userDao.getPasswordByUserId(logginedUserId))){
-            HttpSession session = request.getSession();
-            session.setAttribute("user", logginedUserId);
-            return new PostUserResponse(logginedUserId, null);
+        if(logginedUserId != null && passwordEncoder.matches(postLoginRequest.getPassword(), userDao.getPasswordByUserId(logginedUserId))){
+            return new PostLoginResponse(logginedUserId, null);
         }
 
         throw new UserException(USER_NOT_FOUND);
