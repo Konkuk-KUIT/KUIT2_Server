@@ -60,6 +60,18 @@ public class UserService {
         throw new UserException(USER_NOT_FOUND);
     }
 
+    public GetUserResponse getUserInfo(Long userId) {
+        log.info("[UserService.getUserInfo");
+
+        GetUserResponse getUserResponse = userDao.getUserByUserId(userId);
+        if (getUserResponse != null) {
+            return getUserResponse;
+        }
+
+        throw new UserException(USER_NOT_FOUND);
+
+    }
+
     public void modifyUserStatus_dormant(long userId) {
         log.info("[UserService.modifyUserStatus_dormant]");
 

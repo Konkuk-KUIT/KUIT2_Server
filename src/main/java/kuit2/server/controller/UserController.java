@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static kuit2.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_STATUS;
-import static kuit2.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_VALUE;
+import static kuit2.server.common.response.status.BaseExceptionResponseStatus.*;
 import static kuit2.server.util.BindingResultUtils.getErrorMessages;
 
 @Slf4j
@@ -35,6 +34,27 @@ public class UserController {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
         return new BaseResponse<>(userService.signUp(postUserRequest));
+    }
+
+    /**
+     * 로그인
+     */
+    @PostMapping("/login")
+    public BaseResponse<Object> login(@Validated @RequestBody PostLoginRequest postLoginRequest, BindingResult bindingResult) {
+        log.info("[UserController.login]");
+
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+        return new BaseResponse<>(userService.login(postLoginRequest));
+
+    }
+
+    @GetMapping("/{userId}")
+    public BaseResponse<GetUserResponse> getUserInfo(@PathVariable long userId) {
+        log.info("[UserController.getUserInfo]");
+
+        return new BaseResponse<>(userService.getUserInfo(userId));
     }
 
     /**
@@ -86,17 +106,5 @@ public class UserController {
         return new BaseResponse<>(userService.getUsers(nickname, email, status));
     }
 
-    /**
-     * 로그인
-     */
-    @PostMapping("/login")
-    public BaseResponse<Object> login(@Validated @RequestBody PostLoginRequest postLoginRequest, BindingResult bindingResult) {
-        log.info("[UserController.login]");
 
-        if (bindingResult.hasErrors()) {
-            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
-        }
-        return new BaseResponse<>(userService.login(postLoginRequest));
-
-    }
 }

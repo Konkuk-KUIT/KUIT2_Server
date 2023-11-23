@@ -103,4 +103,21 @@ public class UserDao {
         Map<String, Object> param = Map.of("user_id", userId);
         return jdbcTemplate.queryForObject(sql, param, String.class);
     }
+
+    public GetUserResponse getUserByUserId(long userId) {
+        String sql = "select email, phone_number, nickname, profile_image, status from user where user_id=:user_id";
+        Map<String, Object> param = Map.of("user_id", userId);
+        return jdbcTemplate.queryForObject(
+                sql,
+                param,
+                (resultSet, rowNum) -> {
+                    GetUserResponse getUserResponse = new GetUserResponse();
+                    getUserResponse.setEmail(resultSet.getString("email"));
+                    getUserResponse.setNickname(resultSet.getString("nickname"));
+                    getUserResponse.setStatus(resultSet.getString("status"));
+                    getUserResponse.setPhoneNumber(resultSet.getString("phone_number"));
+                    getUserResponse.setProfileImage(resultSet.getString("profile_image"));
+                    return getUserResponse;
+                });
+    }
 }
