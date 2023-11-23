@@ -25,7 +25,7 @@ public class UserDao {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    public boolean hasDuplicateEmail(String email) {
+    public boolean hasDuplicateEmail(String email) { //NamedParameterJdbcTemplate 는 일반 JdbcTemplate 과는 다르게, 파라미터를 ? 대신 :email 처럼 이름을 명시할 수 있어 편리하다.
         String sql = "select exists(select email from user where email=:email and status in ('active', 'dormant'))";
         Map<String, Object> param = Map.of("email", email);
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
