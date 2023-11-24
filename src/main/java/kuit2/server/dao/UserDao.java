@@ -19,6 +19,7 @@ import java.util.Objects;
 @Repository
 public class UserDao {
 
+    //7-8주차 JdbcTemplate 강의 참조
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     public UserDao(DataSource dataSource) {
