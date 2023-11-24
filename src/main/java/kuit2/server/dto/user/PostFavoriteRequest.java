@@ -4,17 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetCartResponse {
-
-    private String menuName;
-    private List<MenuOption> options;
-    private float menuPrice;
-
+public class PostFavoriteRequest {
+    private long restaurantId;
 }

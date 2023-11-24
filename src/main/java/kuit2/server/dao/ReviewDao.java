@@ -46,11 +46,11 @@ public class ReviewDao {
             return response;
         });
 
-        // 맵을 사용하여 review_id 별로 리뷰 객체를 저장합니다.
+        // 맵을 사용하여 review_id 별로 리뷰 객체를 저장
         Map<Long, GetReviewResponse> reviewsMap = new HashMap<>();
         reviews.forEach(r -> reviewsMap.put(r.getReviewId(), r));
 
-        // 2단계: 리뷰 이미지 조회
+        //리뷰 이미지 조회
         String imageSql = "SELECT image_url, review_id FROM baemin_db.review_image WHERE review_id IN (:reviewIds)";
         List<Map<String, Object>> imageRows = jdbcTemplate.queryForList(imageSql, Collections.singletonMap("reviewIds", reviewsMap.keySet()));
         imageRows.forEach(row -> {
@@ -63,7 +63,7 @@ public class ReviewDao {
             }
         });
 
-        // 3단계: 리뷰 메뉴 조회
+        //리뷰 메뉴 조회
         String menuSql = "SELECT rm.review_id, m.name, rm.is_recommendable " +
                 "FROM baemin_db.review_menu rm " +
                 "JOIN baemin_db.menu m ON rm.menu_id = m.menu_id " +

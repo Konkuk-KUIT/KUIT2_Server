@@ -120,4 +120,16 @@ public class UserDao {
                     return getUserResponse;
                 });
     }
+
+    public String addFavorite(long userId, long restaurantId) {
+        String sql = "insert into favorite(user_id, restaurant_id, status) values(:user_id, :restaurant_id, :status)";
+        Map<String, Object> param = Map.of(
+                "user_id", userId,
+                "restaurant_id", restaurantId,
+                "status", "active");
+
+        jdbcTemplate.update(sql, param);
+
+        return "ok";
+    }
 }

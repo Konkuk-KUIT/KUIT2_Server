@@ -11,10 +11,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetCartResponse {
+public class GetFavoriteResponse {
 
-    private String menuName;
-    private List<MenuOption> options;
-    private float menuPrice;
+    private List<GetBriefRestaurantResponse> restaurants;
 
 }

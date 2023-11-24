@@ -1,10 +1,9 @@
 package kuit2.server.service;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import kuit2.server.common.exception.DatabaseException;
 import kuit2.server.common.exception.UserException;
 import kuit2.server.dao.OrderMenuDao;
+import kuit2.server.dao.RestaurantDao;
 import kuit2.server.dao.ReviewDao;
 import kuit2.server.dao.UserDao;
 import kuit2.server.dto.user.*;
@@ -26,6 +25,8 @@ public class UserService {
     private final UserDao userDao;
     private final OrderMenuDao orderMenuDao;
     private final ReviewDao reviewDao;
+    private final RestaurantDao restaurantDao;
+
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
@@ -140,5 +141,15 @@ public class UserService {
 
         throw new UserException(USER_NOT_FOUND);
 
+    }
+
+    public String addFavorite(long userId, long restaurantId) {
+        log.info("[UserService.addFavorite");
+
+        if (userDao.getUserByUserId(userId) != null && restaurantDao.getBriefRestaurantById(restaurantId) != null) {
+            return userDao.addFavorite(userId, restaurantId);
+        }
+
+        throw new UserException(USER_NOT_FOUND);
     }
 }
