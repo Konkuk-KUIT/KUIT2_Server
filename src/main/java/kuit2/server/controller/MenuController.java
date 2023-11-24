@@ -15,7 +15,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/stores/{category}")
+@RequestMapping("/stores/{storeId}/menus")
 public class MenuController {
 
     private final MenuService menuService;
@@ -23,9 +23,9 @@ public class MenuController {
     /**
      * 메뉴 조회
      */
-    @GetMapping("/{storeId}")
-    public BaseResponse<List<GetMenuResponse>> getMenus(@PathVariable String category, @PathVariable long storeId) {
+    @GetMapping("")
+    public BaseResponse<List<GetMenuResponse>> getMenus(@PathVariable long storeId) {
         log.info("MenuController.getMenus");
-        return new BaseResponse<>(menuService.getMenus(category, storeId));
+        return new BaseResponse<>(menuService.getMenus(storeId));
     }
 }

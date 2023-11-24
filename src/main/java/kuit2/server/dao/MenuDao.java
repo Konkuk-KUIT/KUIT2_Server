@@ -18,12 +18,12 @@ public class MenuDao {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    public List<GetMenuResponse> getMenus(String category, long storeId) {
+    public List<GetMenuResponse> getMenus(long storeId) {
         log.info("MenuDao.getMenus");
         String sql = "SELECT m.name, m.price, m.image, m.category " +
                 "FROM menu m JOIN store s ON m.store_id = s.store_id " +
-                "WHERE s.store_id = :store_id and s.category = :category and m.status = 'active' and s.status = 'active'";
-        Map<String, Object> param = Map.of("store_id", storeId, "category", category);
+                "WHERE s.store_id = :store_id and m.status = 'active' and s.status = 'active'";
+        Map<String, Object> param = Map.of("store_id", storeId);
         return jdbcTemplate.query(sql, param,
                 (rs, rowNum) -> new GetMenuResponse(
                         rs.getString("name"),

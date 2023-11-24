@@ -14,8 +14,8 @@ import java.util.List;
 public class MenuService {
     private final MenuDao menuDao;
 
-    public List<GetMenuResponse> getMenus(String category, long storeId) {
+    public List<GetMenuResponse> getMenus(long storeId) {
         log.info("MenuService.getMenus");
-        return menuDao.getMenus(category, storeId);
+        return menuDao.getMenus(storeId);
     }
 }

@@ -29,7 +29,7 @@ public class StoreDao {
         );
     }
 
-    public List<GetStoreResponse> getStores(String category) {
+    public List<GetStoreResponse> getStoresByCategory(String category) {
         log.info("[StoreDao.getStores]");
         String sql = "SELECT name, phone_number, order_place, min_order_price, image, category, rating " +
                 "FROM store " +

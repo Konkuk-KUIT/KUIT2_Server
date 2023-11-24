@@ -15,7 +15,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/stores/{category}/{storeId}/{menuId}/menu-options")
+@RequestMapping("/stores/{storeId}/menus/{menuId}/menuOptions")
 public class MenuOptionController {
 
     private final MenuOptionService menuOptionService;
@@ -24,10 +24,9 @@ public class MenuOptionController {
      * 메뉴 옵션 조회
      */
     @GetMapping("")
-    public BaseResponse<List<MenuOptionResponse>> getMenuOptions(@PathVariable String category,
-                                                                 @PathVariable long storeId,
+    public BaseResponse<List<MenuOptionResponse>> getMenuOptions(@PathVariable long storeId,
                                                                  @PathVariable long menuId) {
         log.info("[MenuOptionController.getMenuOptions]");
-        return new BaseResponse<>(menuOptionService.getMenuOptions(category, storeId, menuId));
+        return new BaseResponse<>(menuOptionService.getMenuOptions(storeId, menuId));
     }
 }

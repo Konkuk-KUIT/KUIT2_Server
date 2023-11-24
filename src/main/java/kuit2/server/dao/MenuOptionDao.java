@@ -19,13 +19,13 @@ public class MenuOptionDao {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    public List<MenuOptionResponse> getMenuOptions(String category, long storeId, long menuId) {
+    public List<MenuOptionResponse> getMenuOptions(long storeId, long menuId) {
         log.info("MenuOptionDao.getMenuOptions");
         String sql = "SELECT mo.category, mo.name, mo.additional_price " +
                 "FROM menu_option mo JOIN menu m ON m.menu_id = mo.menu_id " +
                 "JOIN store s ON s.store_id = m.store_id " +
-                "WHERE s.category = :category and s.store_id = :store_id and m.menu_id = :menu_id";
-        Map<String, Object> param = Map.of("category", category, "store_id", storeId, "menu_id", menuId);
+                "WHERE s.store_id = :store_id and m.menu_id = :menu_id";
+        Map<String, Object> param = Map.of( "store_id", storeId, "menu_id", menuId);
         return jdbcTemplate.query(sql, param,
                 (rs, rowNum) -> new MenuOptionResponse(
                         rs.getString("category"),

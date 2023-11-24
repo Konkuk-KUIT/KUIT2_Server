@@ -6,10 +6,7 @@ import kuit2.server.dto.store.GetStoreResponse;
 import kuit2.server.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,10 +30,10 @@ public class StoreController {
     /**
     * 가게 목록 조회
      */
-    @GetMapping("/{category}")
-    public BaseResponse<List<GetStoreResponse>> getStores(@PathVariable String category) {
+    @GetMapping("")
+    public BaseResponse<List<GetStoreResponse>> getStoresByCategory(@RequestParam String category) {
         log.info("[StoreController.getStores]");
-        return new BaseResponse<>(storeService.getStores(category));
+        return new BaseResponse<>(storeService.getStoresByCategory(category));
     }
 
 

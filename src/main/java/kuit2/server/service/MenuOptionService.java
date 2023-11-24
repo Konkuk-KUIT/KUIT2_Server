@@ -15,8 +15,8 @@ public class MenuOptionService {
 
     private final MenuOptionDao menuOptionDao;
 
-    public List<MenuOptionResponse> getMenuOptions(String category, long storeId, long menuId) {
+    public List<MenuOptionResponse> getMenuOptions(long storeId, long menuId) {
         log.info("[MenuOptionService.getMenuOptions]");
-        return menuOptionDao.getMenuOptions(category, storeId, menuId);
+        return menuOptionDao.getMenuOptions(storeId, menuId);
     }
 }

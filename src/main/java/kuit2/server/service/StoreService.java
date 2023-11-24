@@ -20,9 +20,9 @@ public class StoreService {
         return storeDao.getCategories();
     }
 
-    public List<GetStoreResponse> getStores(String category) {
+    public List<GetStoreResponse> getStoresByCategory(String category) {
         log.info("[StoreService.getStores]");
-        return storeDao.getStores(category);
+        return storeDao.getStoresByCategory(category);
     }
 
 }
