@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@Priority(0)
+@Priority(0)            // BaseExceptionControllerAdvice보다 우선순위 높음
 @RestController
 public class JwtExceptionControllerAdvice {
 

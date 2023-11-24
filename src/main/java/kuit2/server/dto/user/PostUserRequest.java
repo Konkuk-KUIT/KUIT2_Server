@@ -11,11 +11,12 @@ import org.springframework.lang.Nullable;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor          // 해당 클래스에 대한 빈껍데기를 만들어줌 -> 생성된 빈껍데기에 objectMapper를 통해서 값을 주입해줌(@Setter 어노테이션 필요!!)
 public class PostUserRequest {
+    // 회원가입시 필요한 정보 -> email, password, phonenumber, nickname, profileImage
 
     @Email(message = "email: 이메일 형식이어야 합니다")
-    @NotBlank(message = "email: {NotBlank}")
+    @NotBlank(message = "email: {NotBlank}")           // errors.properties에서 동적으로 읽을 수 있음
     @Length(max = 50, message = "email: 최대 {max}자리까지 가능합니다")
     private String email;
 
