@@ -7,9 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public class GetStoreResponse {
     private String name;
-    private String phone_number;
-    private String order_place;
-    private long min_order_price;
+    private String phoneNumber;
+    private String orderPlace;
+    private long minOrderPrice;
     private String image;
     private String category;
     private double rating;

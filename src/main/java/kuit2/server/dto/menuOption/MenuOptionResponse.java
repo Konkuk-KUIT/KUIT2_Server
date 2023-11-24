@@ -8,5 +8,5 @@ import lombok.Getter;
 public class MenuOptionResponse {
     private String category;
     private String name;
-    private long additional_price;
+    private long additionalPrice;
 }
