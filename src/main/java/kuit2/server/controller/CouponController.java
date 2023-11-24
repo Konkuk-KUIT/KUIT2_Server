@@ -50,4 +50,14 @@ public class CouponController {
         postCouponRequest.setUserId(userId);
         return new BaseResponse<PostCouponResponse>(couponService.addCoupon(postCouponRequest));
     }
+
+    /**
+     * 쿠폰 사용 (삭제)
+     */
+    @PatchMapping("/{couponId}/used")
+    public BaseResponse<Object> modifyCouponStatus_used(@PathVariable long userId, @PathVariable long couponId) {
+        log.info("[CouponController.useCoupon]");
+        couponService.useCoupon(userId, couponId);
+        return new BaseResponse<>(null);
+    }
 }

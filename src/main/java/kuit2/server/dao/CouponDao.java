@@ -52,4 +52,11 @@ public class CouponDao {
 
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
+
+    public int useCoupon(long userId, long couponId) {
+        log.info("CouponDao.useCoupon");
+        String sql = "UPDATE coupon SET status=:status where user_id=:user_id and coupon_id=:coupon_id";
+        Map<String, Object> param = Map.of("status", "used","user_id", userId, "coupon_id", couponId);
+        return jdbcTemplate.update(sql, param);
+    }
 }
