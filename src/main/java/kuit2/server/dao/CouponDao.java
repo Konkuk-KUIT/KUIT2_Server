@@ -28,8 +28,8 @@ public class CouponDao {
         log.info("CouponDao.getCoupons");
         String sql = "SELECT c.code, c.name, c.discount_price, c.min_order_price, c.deadline, c.status " +
                 "FROM coupon c JOIN user u ON c.user_id = u.user_id " +
-                "WHERE u.user_id = :user_id";
-        Map<String, Object> param = Map.of("user_id", userId);
+                "WHERE u.user_id = :user_id and c.status = :status";
+        Map<String, Object> param = Map.of("user_id", userId, "status", "active");
         return jdbcTemplate.query(sql, param,
                 (rs, rowNum) -> new GetCouponResponse(
                         rs.getString("code"),
