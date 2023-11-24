@@ -106,5 +106,14 @@ public class UserController {
         return new BaseResponse<>(userService.getUsers(nickname, email, status));
     }
 
+    /**
+     * 유저장바구니 조회
+     */
+    @GetMapping("/{userId}/cart")
+    public BaseResponse<List<GetCartResponse>> getCart(@PathVariable long userId) {
+        log.info("[UserController.getCart");
+
+        return new BaseResponse<List<GetCartResponse>>(userService.getCart(userId));
+    }
 
 }

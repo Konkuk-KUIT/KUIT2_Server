@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import kuit2.server.common.exception.DatabaseException;
 import kuit2.server.common.exception.UserException;
+import kuit2.server.dao.OrderMenuDao;
 import kuit2.server.dao.UserDao;
 import kuit2.server.dto.user.*;
 import kuit2.server.util.jwt.JwtProvider;
@@ -22,6 +23,7 @@ import static kuit2.server.common.response.status.BaseExceptionResponseStatus.*;
 public class UserService {
 
     private final UserDao userDao;
+    private final OrderMenuDao orderMenuDao;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
@@ -115,5 +117,15 @@ public class UserService {
         if (userDao.hasDuplicateNickName(nickname)) {
             throw new UserException(DUPLICATE_NICKNAME);
         }
+    }
+
+    public List<GetCartResponse> getCart(long userId) {
+        log.info("[UserService.getUsers]");
+
+        if (userDao.getUserByUserId(userId) != null) {
+            return orderMenuDao.getOrderMenusByUserId(userId);
+        }
+
+        throw new UserException(USER_NOT_FOUND);
     }
 }
