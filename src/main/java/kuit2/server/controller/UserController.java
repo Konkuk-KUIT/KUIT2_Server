@@ -116,4 +116,11 @@ public class UserController {
         return new BaseResponse<List<GetCartResponse>>(userService.getCart(userId));
     }
 
+    @GetMapping("/{userId}/reviews")
+    public BaseResponse<List<GetReviewResponse>> getReviews(@PathVariable long userId) {
+        log.info("UserController.getReviews");
+
+        return new BaseResponse<List<GetReviewResponse>>(userService.getReviews(userId));
+    }
+
 }

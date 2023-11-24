@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import kuit2.server.common.exception.DatabaseException;
 import kuit2.server.common.exception.UserException;
 import kuit2.server.dao.OrderMenuDao;
+import kuit2.server.dao.ReviewDao;
 import kuit2.server.dao.UserDao;
 import kuit2.server.dto.user.*;
 import kuit2.server.util.jwt.JwtProvider;
@@ -24,6 +25,7 @@ public class UserService {
 
     private final UserDao userDao;
     private final OrderMenuDao orderMenuDao;
+    private final ReviewDao reviewDao;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
@@ -127,5 +129,16 @@ public class UserService {
         }
 
         throw new UserException(USER_NOT_FOUND);
+    }
+
+    public List<GetReviewResponse> getReviews(long userId) {
+        log.info("[UserService.getReviews");
+
+        if (userDao.getUserByUserId(userId) != null) {
+            return reviewDao.getReviewsByUserId(userId);
+        }
+
+        throw new UserException(USER_NOT_FOUND);
+
     }
 }
