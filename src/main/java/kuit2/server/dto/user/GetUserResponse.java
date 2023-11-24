@@ -15,5 +15,8 @@ public class GetUserResponse {
     private String phoneNumber;
     private String nickname;
     private String profileImage;
+    private String grade;
     private String status;
+    private int orderCount;
+
 }

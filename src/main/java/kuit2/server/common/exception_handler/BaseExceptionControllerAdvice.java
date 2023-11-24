@@ -22,7 +22,7 @@ public class BaseExceptionControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({BadRequestException.class, NoHandlerFoundException.class, TypeMismatchException.class})
     public BaseErrorResponse handle_BadRequest(Exception e) {
-        log.error("[handle_BadRequest]", e);
+        log.error("[handle_BadRequest]", e);//유효하지 않은 url에 접속했을때 예외
         return new BaseErrorResponse(URL_NOT_FOUND);
     }
 
@@ -55,7 +55,7 @@ public class BaseExceptionControllerAdvice {
         log.error("[handle_InternalServerError]", e);
         return new BaseErrorResponse(e.getExceptionStatus());
     }
-
+    /**어떤 예외 컨트롤러에서도 해결하지 못했을때..!*/
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(RuntimeException.class)
     public BaseErrorResponse handle_RuntimeException(Exception e) {

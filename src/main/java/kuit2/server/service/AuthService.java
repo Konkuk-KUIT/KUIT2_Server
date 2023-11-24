@@ -52,12 +52,8 @@ public class AuthService {
         }
     }
 
-    public long getUserIdByEmail(String email) {
-        try {
-            return userDao.getUserIdByEmail(email);
-        } catch (IncorrectResultSizeDataAccessException e) {
-            throw new JwtUnauthorizedTokenException(TOKEN_MISMATCH);
-        }
-    }
+
+
+
 
 }

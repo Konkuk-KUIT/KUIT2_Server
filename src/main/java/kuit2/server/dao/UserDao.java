@@ -11,13 +11,18 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static kuit2.server.service.UserService.GRADES;
+
 @Slf4j
 @Repository
 public class UserDao {
+    private static final String[] GRADES = {"고마운분", "귀한분", "더귀한분", "천생연분"};
+
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -31,6 +36,7 @@ public class UserDao {
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
 
+
     public boolean hasDuplicateNickName(String nickname) {
         String sql = "select exists(select email from user where nickname=:nickname and status in ('active', 'dormant'))";
         Map<String, Object> param = Map.of("nickname", nickname);
@@ -38,8 +44,8 @@ public class UserDao {
     }
 
     public long createUser(PostUserRequest postUserRequest) {
-        String sql = "insert into user(email, password, phone_number, nickname, profile_image) " +
-                "values(:email, :password, :phoneNumber, :nickname, :profileImage)";
+        String sql = "insert into user(user_id,email, password, phone_number, nickname, profile_image) " +
+                "values(:user_id, :email, :password, :phoneNumber, :nickname, :profileImage)";
 
         SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -87,7 +93,10 @@ public class UserDao {
                         rs.getString("phone_number"),
                         rs.getString("nickname"),
                         rs.getString("profile_image"),
-                        rs.getString("status"))
+                        rs.getString("grade"),
+                        rs.getString("status"),
+                        rs.getInt("order_count")
+                )
         );
     }
 
@@ -97,10 +106,69 @@ public class UserDao {
         return jdbcTemplate.queryForObject(sql, param, long.class);
     }
 
+    public String getEmailByUserId(long userId){
+        String sql = "select email from user where user_id=:user_id and status='active'";
+        Map<String, Object> param =Map.of("user_id",userId);
+        return jdbcTemplate.queryForObject(sql,param,String.class);
+    }
+
 
     public String getPasswordByUserId(long userId) {
         String sql = "select password from user where user_id=:user_id and status='active'";
         Map<String, Object> param = Map.of("user_id", userId);
         return jdbcTemplate.queryForObject(sql, param, String.class);
     }
+
+
+    public String getGradeByUserId(long userId) {
+        String sql = "select grade from user where user_id=:user_id and status='active'";
+        Map<String, Object> param = Map.of("user_id", userId);
+        return jdbcTemplate.queryForObject(sql, param, String.class);
+    }
+
+    public int getOrderCount(long userId) {
+        String sql = "SELECT order_count FROM user WHERE user_id = :userId";
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        return jdbcTemplate.queryForObject(sql, params, Integer.class);
+    }
+
+    /**
+     *  등급 증가
+     * */
+    public String increaseGrade(long userId){
+        int orderCount = getOrderCountByUserId(userId);
+        if (orderCount % 5 == 0) { // 등급을 변경해야 하는 경우에만 실행
+            int gradeIndex = orderCount / 5 - 1; // orderCount가 5, 10, 15, ...일 때 gradeIndex가 0, 1, 2, ...가 되도록 조정
+            gradeIndex = Math.min(gradeIndex, GRADES.length - 1); // 배열 범위를 넘어가지 않도록 조정
+            String newGrade = GRADES[gradeIndex];
+
+            String sql = "UPDATE user SET grade = :newGrade WHERE user_id = :userId";
+            Map<String, Object> params = new HashMap<>();
+            params.put("newGrade", newGrade);
+            params.put("userId", userId);
+            jdbcTemplate.update(sql, params);
+
+            return newGrade;
+        }
+        return null;
+    }
+
+    public int getOrderCountByUserId(long userId) {
+        String sql = "select order_count from user where user_id=:user_id and status='active'";
+        Map<String, Object> param = Map.of("user_id", userId);
+        return jdbcTemplate.queryForObject(sql, param, int.class);
+    }
+
+    /**
+     *주문수 증가
+     */
+    public int increaseOrderCount(long userId){
+        String sql="update user set order_count = order_count + 1 WHERE user_id = :userId";
+        Map<String, Object> param = Map.of("userId", userId);
+        return jdbcTemplate.update(sql, param);//업데이트 쿼리는 이거 사용해야함
+    }
+
+
+
 }

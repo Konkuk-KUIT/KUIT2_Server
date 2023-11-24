@@ -106,3 +106,11 @@ spring:
 
   messages:
     basename: errors
+
+
+
+  spring:
+    jpa:
+      hibernate:
+        ddl-auto: create
+

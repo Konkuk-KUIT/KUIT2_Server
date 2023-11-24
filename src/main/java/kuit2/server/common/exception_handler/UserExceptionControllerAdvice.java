@@ -15,7 +15,7 @@ import static kuit2.server.common.response.status.BaseExceptionResponseStatus.IN
 @Priority(0)
 @RestControllerAdvice
 public class UserExceptionControllerAdvice {
-
+    //예외처리
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserException.class)
     public BaseErrorResponse handle_UserException(UserException e) {
