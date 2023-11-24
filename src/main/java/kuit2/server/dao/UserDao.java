@@ -2,8 +2,10 @@ package kuit2.server.dao;
 
 import kuit2.server.dto.user.GetUserResponse;
 import kuit2.server.dto.user.PostUserRequest;
+import kuit2.server.dto.user.PutUserRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -69,6 +71,23 @@ public class UserDao {
         Map<String, Object> param = Map.of(
                 "nickname", nickname,
                 "user_id", userId);
+        return jdbcTemplate.update(sql, param);
+    }
+
+    public int modifyUser(long userId, PutUserRequest putUserRequest) {
+        String sql = "update user set email=:email, password=:password, phone_number=:phoneNumber, " +
+                "nickname=:nickname, profile_image=:profileImage where user_id=:userId";
+
+        // PutUserRequest 객체에서 값을 추출하여 Map에 추가
+        Map<String, Object> param = Map.of(
+                "email", putUserRequest.getEmail(),
+                "password", putUserRequest.getPassword(),
+                "phoneNumber", putUserRequest.getPhoneNumber(),
+                "nickname", putUserRequest.getNickname(),
+                "profileImage", putUserRequest.getProfileImage(),
+                "userId", userId
+        );
+
         return jdbcTemplate.update(sql, param);
     }
 

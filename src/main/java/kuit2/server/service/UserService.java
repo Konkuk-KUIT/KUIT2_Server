@@ -74,6 +74,26 @@ public class UserService {
         }
     }
 
+    public PutUserResponse modifyUser(long userId, PutUserRequest putUserRequest) {
+        log.info("[UserService.modifyUser]");
+
+        // TODO: 1. validation (중복 검사)
+        validateEmail(putUserRequest.getEmail());
+        String nickname = putUserRequest.getNickname();
+        if (nickname != null) {
+            validateNickname(putUserRequest.getNickname());
+        }
+
+        // TODO: 2. password 암호화
+        String encodedPassword = passwordEncoder.encode(putUserRequest.getPassword());
+        putUserRequest.resetPassword(encodedPassword);
+
+        // TODO: 3. JWT 토큰 생성
+        String jwt = jwtProvider.createToken(putUserRequest.getEmail(), userId);
+
+        return new PutUserResponse(userId, jwt);
+    }
+
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
         log.info("[UserService.getUsers]");
         return userDao.getUsers(nickname, email, status);
