@@ -1,13 +1,19 @@
 package kuit2.server.dao;
 
 import kuit2.server.dto.coupon.GetCouponResponse;
+import kuit2.server.dto.coupon.PostCouponRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @Repository
@@ -32,6 +38,18 @@ public class CouponDao {
                         rs.getLong("min_order_price"),
                         rs.getString("deadline"),
                         rs.getString("status"))
-                );
+        );
+    }
+
+    public long addCoupon(PostCouponRequest postCouponRequest) {
+        log.info("CouponDao.addCoupon");
+        String sql = "INSERT INTO coupon(code, name, discount_price, min_order_price, deadline, user_id) " +
+                "VALUES(:code, :name, :discountPrice, :minOrderPrice, :deadline, :userId)";
+
+        SqlParameterSource param = new BeanPropertySqlParameterSource(postCouponRequest);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(sql, param, keyHolder);
+
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 }
