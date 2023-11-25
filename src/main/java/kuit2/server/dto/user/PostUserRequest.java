@@ -27,6 +27,8 @@ public class PostUserRequest {
     private String password;
 
     @NotBlank(message = "phoneNumber: {NotBlank}")
+    @Pattern(regexp="\\d{3}-\\d{3,4}-\\d{4}",
+            message="전화번호 형식에 맞지 않습니다. (예: 010-1234-5678)")
     @Length(max = 20, message = "phoneNumber: 최대 {max}자리까지 가능합니다")
     private String phoneNumber;
 

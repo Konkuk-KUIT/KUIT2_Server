@@ -71,6 +71,37 @@ public class UserController {
     }
 
     /**
+     * 이메일 변경
+     */
+    @PatchMapping("/{userId}/email")
+    public BaseResponse<String> modifyEmail(@PathVariable long userId,
+                                            @Validated @RequestBody PatchEmailRequest patchEmailRequest, BindingResult bindingResult) {
+        log.info("[UserController.modifyEmail]");
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+        userService.modifyEmail(userId, patchEmailRequest.getEmail());
+        return new BaseResponse<>(null);
+    }
+
+    /**
+     * 전화번호 변경
+     */
+    @PatchMapping("/{userId}/phone")
+    public BaseResponse<String> modifyPhoneNumber(@PathVariable long userId,
+                                                  @Validated @RequestBody PatchPhoneNumberRequest patchPhoneNumberRequest, BindingResult bindingResult) {
+        log.info("[UserController.modifyPhoneNumber]");
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+
+        userService.modifyPhoneNumber(userId, patchPhoneNumberRequest.getPhoneNumber());
+        return new BaseResponse<>(null);
+
+    }
+
+
+    /**
      * 회원 목록 조회
      */
     @GetMapping("")
@@ -84,4 +115,15 @@ public class UserController {
         }
         return new BaseResponse<>(userService.getUsers(nickname, email, status));
     }
+
+    /**
+     * 회원 ID로 조회
+     */
+    @GetMapping("{userId}")
+    public BaseResponse<GetUserResponse> getUser(@PathVariable long userId) {
+        log.info("[UserController.getUser]");
+        return new BaseResponse<>(userService.getUserById(userId));
+    }
+
+
 }
