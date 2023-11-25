@@ -3,12 +3,13 @@ package kuit2.server.controller;
 import kuit2.server.common.response.BaseResponse;
 import kuit2.server.dao.RestaurantDao;
 import kuit2.server.dto.restaurant.GetCategoriesResponse;
+import kuit2.server.dto.user.GetBriefRestaurantResponse;
 import kuit2.server.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -26,5 +27,15 @@ public class RestaurantController {
         log.info("RestaurantController.getCategories");
 
         return new BaseResponse<>(restaurantService.getCategories());
+    }
+
+    /**
+     * 음식점 목록 조회
+     */
+    @GetMapping("/{categoryId}")
+    public BaseResponse<List<GetBriefRestaurantResponse>> getRestaurants(@PathVariable long categoryId, @RequestParam(name = "sort-by") String sortBy, @RequestParam(name = "min-order-price") String minOrderPrice) {
+        log.info("RestaurantController.getRestaurants");
+
+        return new BaseResponse<>(restaurantService.getRestaurants(categoryId, sortBy, minOrderPrice));
     }
 }
