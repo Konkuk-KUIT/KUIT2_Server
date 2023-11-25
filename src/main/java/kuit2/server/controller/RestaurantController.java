@@ -28,7 +28,7 @@ public class RestaurantController {
         return new BaseResponse<>(restaurantService.getCategories());
     }
 
-    @GetMapping("/{categoryId}")
+    @GetMapping("/categories/{categoryId}")
     public BaseResponse<List<GetStoreResponse>> getStoresByCategory(@RequestParam(required = false, defaultValue = "") String category) {
         log.info("[RestaurantController.getStoresByCategory]");
 

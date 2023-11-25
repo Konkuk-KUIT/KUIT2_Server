@@ -43,7 +43,7 @@ public class RestaurantDao {
     }
 
     public List<GetStoreDetailResponse> getStore(String storeId) {
-        String sql = "select * from Stores where storeid = :storeId";
+        String sql = "select * from Stores where storeId = :storeId";
 
         Map<String, Object> params = Map.of("storeId", storeId);
 
