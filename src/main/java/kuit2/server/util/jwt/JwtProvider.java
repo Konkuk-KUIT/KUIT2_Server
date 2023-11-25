@@ -4,23 +4,31 @@ import io.jsonwebtoken.*;
 import kuit2.server.common.exception.jwt.unauthorized.JwtInvalidTokenException;
 import kuit2.server.common.exception.jwt.bad_request.JwtUnsupportedTokenException;
 import kuit2.server.common.exception.jwt.unauthorized.JwtMalformedTokenException;
+import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.security.Keys;
 
 import java.util.Date;
 
 import static kuit2.server.common.response.status.BaseExceptionResponseStatus.*;
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class JwtProvider {
 
-    @Value("${secret.jwt-secret-key}")
-    private String JWT_SECRET_KEY;
 
-    @Value("${secret.jwt-expired-in}")
-    private long JWT_EXPIRED_IN;
+    //@Value("${secret.jwt-secret-key}")
+    private String JWT_SECRET_KEY = "Sskjdfhkjs234=jknkjn0";
+
+    //@Value("${secret.jwt-expired-in}")
+    private long JWT_EXPIRED_IN = 40000;
+
 
     public String createToken(String principal, long userId) {
         log.info("JWT key={}", JWT_SECRET_KEY);

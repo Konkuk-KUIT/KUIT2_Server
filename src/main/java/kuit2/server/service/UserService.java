@@ -3,6 +3,7 @@ package kuit2.server.service;
 import kuit2.server.common.exception.DatabaseException;
 import kuit2.server.common.exception.UserException;
 import kuit2.server.dao.UserDao;
+import kuit2.server.dto.store.GetUserOrderListResponse;
 import kuit2.server.dto.user.*;
 import kuit2.server.util.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -89,5 +90,22 @@ public class UserService {
         if (userDao.hasDuplicateNickName(nickname)) {
             throw new UserException(DUPLICATE_NICKNAME);
         }
+    }
+
+    public List<GetUserJjimResponse> getUserJjim(long userId) {
+        log.info("[UserService.getUserJjim]");
+        return userDao.getUserJjim(userId);
+    }
+
+    public PostUserAddressResponse addAddress(long userId,PostUserAddressRequest postUserAddressRequest) {
+        log.info("[UserService.addAddress]");
+        long addressId = userDao.addAddress(userId, postUserAddressRequest);
+
+        return new PostUserAddressResponse(addressId);
+    }
+
+    public List<GetUserOrderListResponse> getOrders(long userId) {
+        log.info("[UserService.getOrders]");
+        return userDao.getOrders(userId);
     }
 }

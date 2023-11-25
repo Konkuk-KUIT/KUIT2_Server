@@ -1,7 +1,7 @@
 package kuit2.server.dao;
 
-import kuit2.server.dto.user.GetUserResponse;
-import kuit2.server.dto.user.PostUserRequest;
+import kuit2.server.dto.store.GetUserOrderListResponse;
+import kuit2.server.dto.user.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -102,5 +102,53 @@ public class UserDao {
         String sql = "select password from user where user_id=:user_id and status='active'";
         Map<String, Object> param = Map.of("user_id", userId);
         return jdbcTemplate.queryForObject(sql, param, String.class);
+    }
+
+    public List<GetUserJjimResponse> getUserJjim(long userId) {
+        String sql = "SELECT A.store_name " +
+                "FROM Store AS A LEFT OUTER JOIN JJim AS B ON A.store_id=B.store_id"+
+                "WHERE B.user_id =: user_id";
+        Map<String, Object> param = Map.of("user_id", userId);
+        return jdbcTemplate.query(sql, param,
+                (rs, rowNum) -> new GetUserJjimResponse(
+                        rs.getString("store_name"))
+        );
+    }
+
+    public long addAddress(long userId, PostUserAddressRequest postUserAddressRequest) {
+        String sql = "insert into Address(user_id, classification, load_address, detail_address, is_now_address) " +
+                "values(:user_id, :classification, :load_address, :detail_address, true)";
+
+        //null일때 기본값 어케주지
+        assert postUserAddressRequest.getDetail_address() != null;
+
+//        Map<String, Object> param = Map.of(
+//                "user_id", userId,
+//                "classification", postUserAddressRequest.getClassification(),
+//                "load_address", postUserAddressRequest.getLoad_address(),
+//                "detail_address", postUserAddressRequest.getDetail_address());
+
+        SqlParameterSource param = new BeanPropertySqlParameterSource(postUserAddressRequest);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(sql, param, keyHolder);
+
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
+    }
+
+    public List<GetUserOrderListResponse> getOrders(long userId) {
+        String sql = "SELECT C.store_name, A.food_name, B.option_name, A.price"+
+                "FROM Orders AS A LEFT OUTER JOIN Options AS B"+
+                "ON A.option_pack_id = B.option_pack_id"+
+                "LEFT OUTRE JOIN Store AS C ON A.store_id=C.store_id"+
+                "WHERE A.user_id:=user_id";
+        Map<String, Object> param = Map.of("user_id", userId);
+        return jdbcTemplate.query(sql, param,
+                (rs, rowNum) -> new GetUserOrderListResponse(
+                        rs.getString("store_name"),
+                        rs.getString("food_name"),
+                        rs.getString("option_name"),
+                        rs.getInt("price")
+                        )
+        );
     }
 }

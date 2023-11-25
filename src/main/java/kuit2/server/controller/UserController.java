@@ -2,6 +2,7 @@ package kuit2.server.controller;
 
 import kuit2.server.common.exception.UserException;
 import kuit2.server.common.response.BaseResponse;
+import kuit2.server.dto.store.GetUserOrderListResponse;
 import kuit2.server.dto.user.*;
 import kuit2.server.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +60,17 @@ public class UserController {
     /**
      * 닉네임 변경
      */
-    @PatchMapping("/{userId}/nickname")
+//    @PatchMapping("/{userId}/nickname")
+//    public BaseResponse<String> modifyNickname(@PathVariable long userId,
+//                                               @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
+//        log.info("[UserController.modifyNickname]");
+//        if (bindingResult.hasErrors()) {
+//            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+//        }
+//        userService.modifyNickname(userId, patchNicknameRequest.getNickname());
+//        return new BaseResponse<>(null);
+//    }
+    @PatchMapping("/modify")
     public BaseResponse<String> modifyNickname(@PathVariable long userId,
                                                @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
         log.info("[UserController.modifyNickname]");
@@ -84,4 +95,28 @@ public class UserController {
         }
         return new BaseResponse<>(userService.getUsers(nickname, email, status));
     }
+
+    //찜리스트보기
+    @GetMapping("/jjim")
+    public BaseResponse<List<GetUserJjimResponse>> getUserJjim(@PathVariable long userId){
+        log.info("[UserController.getUserJjim]");
+        return new BaseResponse<>(userService.getUserJjim(userId));
+    }
+
+    //주소지 추가
+    @PostMapping("/address")
+    public BaseResponse<PostUserAddressResponse> addAddress(@PathVariable long userId, @Validated @RequestBody PostUserAddressRequest postUserAddressRequest, BindingResult bindingResult) {
+        log.info("[UserController.addAddress]");
+        return new BaseResponse<>(userService.addAddress(userId, postUserAddressRequest));
+    }
+
+    //주문목록 확인
+    @GetMapping("/orders")
+    public BaseResponse<List<GetUserOrderListResponse>> getOrders(@PathVariable long userId){
+        log.info("[UserController.getOrders]");
+        return new BaseResponse<>(userService.getOrders(userId));
+    }
+
 }
+
+
