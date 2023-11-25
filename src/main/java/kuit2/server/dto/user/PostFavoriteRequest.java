@@ -1,5 +1,6 @@
 package kuit2.server.dto.user;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,5 +12,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostFavoriteRequest {
+    @NotNull
     private long restaurantId;
 }
