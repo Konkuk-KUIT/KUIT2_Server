@@ -1,7 +1,7 @@
 package kuit2.server.dao;
 
-import kuit2.server.dto.user.GetUserResponse;
-import kuit2.server.dto.user.PostUserRequest;
+import kuit2.server.common.response.BaseResponse;
+import kuit2.server.dto.user.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -143,4 +143,27 @@ public class UserDao {
         jdbcTemplate.update(sql, param);
         return "ok";
     }
+
+    public GetFavoriteResponse getFavorite(long userId) {
+        String sql = "(select name, min_order_price from restaurant where restaurant_id in (select restaurant_id from favorite where user_id=:userId ))";
+        Map<String, Object> param = Map.of("userId", userId);
+        GetFavoriteResponse getFavoriteResponse = new GetFavoriteResponse();
+        getFavoriteResponse.setRestaurants(jdbcTemplate.query(
+                sql,
+                param,
+                (resultSet, rowNum) -> {
+                    GetBriefRestaurantResponse getBriefRestaurantResponse = new GetBriefRestaurantResponse();
+                    getBriefRestaurantResponse.setRestaurantName(resultSet.getString("name"));
+                    getBriefRestaurantResponse.setStar_count(0);
+                    getBriefRestaurantResponse.setReview_count(0);
+                    getBriefRestaurantResponse.setRepresentMenu(null);
+                    getBriefRestaurantResponse.setEta(null);
+                    getBriefRestaurantResponse.setMinOrderPrice(resultSet.getFloat("min_order_price"));
+
+                    return getBriefRestaurantResponse;
+                }));
+
+        return getFavoriteResponse;
+    }
+
 }

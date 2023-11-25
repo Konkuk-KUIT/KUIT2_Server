@@ -2,6 +2,7 @@ package kuit2.server.service;
 
 import kuit2.server.common.exception.DatabaseException;
 import kuit2.server.common.exception.UserException;
+import kuit2.server.common.response.BaseResponse;
 import kuit2.server.dao.OrderMenuDao;
 import kuit2.server.dao.RestaurantDao;
 import kuit2.server.dao.ReviewDao;
@@ -162,5 +163,15 @@ public class UserService {
 
         throw new UserException(USER_NOT_FOUND);
 
+    }
+
+    public GetFavoriteResponse getFavorites(long userId) {
+        log.info("[UserService.getFavorite]");
+
+        if (userDao.getUserByUserId(userId) != null) {
+            return userDao.getFavorite(userId);
+        }
+
+        throw new UserException(USER_NOT_FOUND);
     }
 }

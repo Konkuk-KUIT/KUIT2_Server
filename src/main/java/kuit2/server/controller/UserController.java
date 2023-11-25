@@ -153,4 +153,14 @@ public class UserController {
 
         return new BaseResponse<>(SUCCESS);
     }
+
+    /**
+     * 찜 목록 조회
+     */
+    @GetMapping("/{userId}/favorites")
+    public BaseResponse<GetFavoriteResponse> getFavorites(@PathVariable long userId) {
+        log.info("UserController.getFavorites");
+
+        return new BaseResponse<GetFavoriteResponse>(userService.getFavorites(userId));
+    }
 }
