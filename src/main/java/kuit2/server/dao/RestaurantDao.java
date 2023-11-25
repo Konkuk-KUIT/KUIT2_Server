@@ -1,5 +1,6 @@
 package kuit2.server.dao;
 
+import kuit2.server.dto.restaurant.GetCategoriesResponse;
 import kuit2.server.dto.user.GetBriefRestaurantResponse;
 import kuit2.server.dto.user.GetUserResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -37,5 +38,17 @@ public class RestaurantDao {
 
                     return getBriefRestaurantResponse;
                 });
+    }
+
+    public GetCategoriesResponse getCategories() {
+        String sql = "SELECT name FROM category_restaurant";
+        GetCategoriesResponse getCategoriesResponse = new GetCategoriesResponse();
+        getCategoriesResponse.setCategories(
+                jdbcTemplate.query(sql, (resultSet, rowNum) -> {
+            String categoryName;
+            categoryName = resultSet.getString("name");
+            return categoryName;
+        }));
+        return getCategoriesResponse;
     }
 }
