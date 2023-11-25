@@ -137,9 +137,7 @@ public class UserController {
     public BaseResponse<Object> addFavorite(@PathVariable long userId, @Validated @RequestBody PostFavoriteRequest postFavoriteRequest, BindingResult bindingResult) {
         log.info("UserController.addFavorite");
 
-        userService.addFavorite(userId, postFavoriteRequest.getRestaurantId());
-
-        return new BaseResponse<>(SUCCESS);
+        return new BaseResponse<>(userService.addFavorite(userId, postFavoriteRequest.getRestaurantId()));
     }
 
     /**
@@ -149,9 +147,7 @@ public class UserController {
     public BaseResponse<Object> deleteFavorite(@PathVariable long userId, @RequestParam long restaurantId) {
         log.info("UserController.deleteFavorite");
 
-        userService.deleteFavorite(userId, restaurantId);
-
-        return new BaseResponse<>(SUCCESS);
+        return new BaseResponse<>(userService.deleteFavorite(userId, restaurantId));
     }
 
     /**

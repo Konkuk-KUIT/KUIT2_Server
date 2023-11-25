@@ -163,6 +163,7 @@ public class UserService {
 
         throw new UserException(USER_NOT_FOUND);
 
+
     }
 
     public GetFavoriteResponse getFavorites(long userId) {

@@ -1,5 +1,6 @@
 package kuit2.server.dto.user;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -7,6 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PostLoginResponse {
 
+    @NotNull
     private long userId;
     private String jwt;
 }
