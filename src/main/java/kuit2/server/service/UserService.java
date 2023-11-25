@@ -74,9 +74,32 @@ public class UserService {
         }
     }
 
+    public void modifyEmail(long userId, String email) {
+        log.info("[UserService.modifyEmail]");
+
+        validateEmail(email);
+        int affectRows = userDao.modifyEmail(userId, email);
+        if (affectRows != 1) {
+            throw new DatabaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void modifyPhoneNumber(long userId, String phoneNumber){
+        log.info("[UserService.modifyPhoneNumber]");
+
+        int affectRows = userDao.modifyPhoneNumber(userId, phoneNumber);
+        if (affectRows != 1){
+            throw new DatabaseException(DATABASE_ERROR);
+        }
+    }
+
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
         log.info("[UserService.getUsers]");
         return userDao.getUsers(nickname, email, status);
+    }
+
+    public GetUserResponse getUserById(Long userId) {
+        return userDao.getUserById(userId);
     }
 
     private void validateEmail(String email) {
@@ -90,4 +113,5 @@ public class UserService {
             throw new UserException(DUPLICATE_NICKNAME);
         }
     }
+
 }

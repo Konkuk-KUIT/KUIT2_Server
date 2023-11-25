@@ -72,6 +72,23 @@ public class UserDao {
         return jdbcTemplate.update(sql, param);
     }
 
+
+    public int modifyEmail(long userId, String email) {
+        String sql = "update user set email=:email where user_id=:user_id";
+        Map<String, Object> param = Map.of(
+                "email", email,
+                "user_id", userId);
+        return jdbcTemplate.update(sql, param);
+    }
+
+    public int modifyPhoneNumber(long userId, String phoneNumber){
+        String sql = "update user set phone_number=:phone_number where user_id=:user_id";
+        Map<String, Object> param = Map.of(
+                "phone_number", phoneNumber,
+                "user_id", userId);
+        return jdbcTemplate.update(sql, param);
+    }
+
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
         String sql = "select email, phone_number, nickname, profile_image, status from user " +
                 "where nickname like :nickname and email like :email and status=:status";
@@ -103,4 +120,18 @@ public class UserDao {
         Map<String, Object> param = Map.of("user_id", userId);
         return jdbcTemplate.queryForObject(sql, param, String.class);
     }
+
+    public GetUserResponse getUserById(long userId) {
+        String sql = "select email, phone_number, nickname, profile_image, status from user where user_id=:user_id and status='active'";
+        Map<String, Object> param = Map.of("user_id", userId);
+        return jdbcTemplate.queryForObject(sql, param,
+                (rs, rowNum) -> new GetUserResponse(
+                        rs.getString("email"),
+                        rs.getString("phone_number"),
+                        rs.getString("nickname"),
+                        rs.getString("profile_image"),
+                        rs.getString("status")
+                ));
+    }
+
 }
