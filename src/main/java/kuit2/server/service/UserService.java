@@ -133,7 +133,7 @@ public class UserService {
     }
 
     public List<GetReviewResponse> getReviews(long userId) {
-        log.info("[UserService.getReviews");
+        log.info("[UserService.getReviews]");
 
         if (userDao.getUserByUserId(userId) != null) {
             return reviewDao.getReviewsByUserId(userId);
@@ -144,12 +144,23 @@ public class UserService {
     }
 
     public String addFavorite(long userId, long restaurantId) {
-        log.info("[UserService.addFavorite");
+        log.info("[UserService.addFavorite]");
 
         if (userDao.getUserByUserId(userId) != null && restaurantDao.getBriefRestaurantById(restaurantId) != null) {
             return userDao.addFavorite(userId, restaurantId);
         }
 
         throw new UserException(USER_NOT_FOUND);
+    }
+
+    public String deleteFavorite(long userId, long restaurantId) {
+        log.info("[UserService.deleteFavorite]");
+
+        if (userDao.getUserByUserId(userId) != null && restaurantDao.getBriefRestaurantById(restaurantId) != null) {
+            return userDao.deleteFavorite(userId, restaurantId);
+        }
+
+        throw new UserException(USER_NOT_FOUND);
+
     }
 }

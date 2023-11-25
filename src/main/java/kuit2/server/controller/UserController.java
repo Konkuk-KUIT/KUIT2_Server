@@ -142,4 +142,15 @@ public class UserController {
         return new BaseResponse<>(SUCCESS);
     }
 
+    /**
+     * 찜 취소
+     */
+    @DeleteMapping("/{userId}/favorites")
+    public BaseResponse<Object> deleteFavorite(@PathVariable long userId, @RequestParam long restaurantId) {
+        log.info("UserController.deleteFavorite");
+
+        userService.deleteFavorite(userId, restaurantId);
+
+        return new BaseResponse<>(SUCCESS);
+    }
 }

@@ -132,4 +132,15 @@ public class UserDao {
 
         return "ok";
     }
+
+    public String deleteFavorite(long userId, long restaurantId) {
+        String sql = "delete from favorite where user_id=:userId and restaurant_id=:restaurantId";
+
+        Map<String, Object> param = Map.of(
+                "userId", userId,
+                "restaurantId", restaurantId);
+
+        jdbcTemplate.update(sql, param);
+        return "ok";
+    }
 }
