@@ -26,8 +26,7 @@ public class StoreDao {
         String sql = "insert into store(name, category, address, phone, content) VALUES (:name, :category, :address, :phone, :content)";
         SqlParameterSource param = new BeanPropertySqlParameterSource(postStoreRequest);
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(sql, param);
+        jdbcTemplate.update(sql, param, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
-
     }
 }
