@@ -12,21 +12,21 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     SUCCESS(1000, HttpStatus.OK.value(), "요청에 성공하였습니다."),
 
     /**
-     * 2000: Request 오류 (BAD_REQUEST)
+     * 2000: Request 예외 (BAD_REQUEST)
      */
     BAD_REQUEST(2000, HttpStatus.BAD_REQUEST.value(), "유효하지 않은 요청입니다."),
     URL_NOT_FOUND(2001, HttpStatus.BAD_REQUEST.value(), "유효하지 않은 URL 입니다."),
     METHOD_NOT_ALLOWED(2002, HttpStatus.METHOD_NOT_ALLOWED.value(), "해당 URL에서는 지원하지 않는 HTTP Method 입니다."),
 
     /**
-     * 3000: Server, Database 오류 (INTERNAL_SERVER_ERROR)
+     * 3000: Server, Database 예외 (INTERNAL_SERVER_ERROR)
      */
     SERVER_ERROR(3000, HttpStatus.INTERNAL_SERVER_ERROR.value(), "서버에서 오류가 발생하였습니다."),
     DATABASE_ERROR(3001, HttpStatus.INTERNAL_SERVER_ERROR.value(), "데이터베이스에서 오류가 발생하였습니다."),
     BAD_SQL_GRAMMAR(3002, HttpStatus.INTERNAL_SERVER_ERROR.value(), "SQL에 오류가 있습니다."),
 
     /**
-     * 4000: Authorization 오류
+     * 4000: Authorization 예외
      */
     JWT_ERROR(4000, HttpStatus.UNAUTHORIZED.value(), "JWT에서 오류가 발생하였습니다."),
     TOKEN_NOT_FOUND(4001, HttpStatus.BAD_REQUEST.value(), "토큰이 HTTP Header에 없습니다."),
@@ -37,7 +37,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     TOKEN_MISMATCH(4006, HttpStatus.UNAUTHORIZED.value(), "로그인 정보가 토큰 정보와 일치하지 않습니다."),
 
     /**
-     * 5000: User 오류
+     * 5000: User 예외
      */
     INVALID_USER_VALUE(5000, HttpStatus.BAD_REQUEST.value(), "회원가입 요청에서 잘못된 값이 존재합니다."),
     DUPLICATE_EMAIL(5001, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 이메일입니다."),
@@ -48,7 +48,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     EMAIL_NOT_FOUND(4006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다."),
 
     /**
-     * 6000: Restaurant 오류
+     * 6000: Restaurant 예외
      */
     RESTAURANT_NOT_FOUND(6000, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 식당입니다.");
 
