@@ -3,7 +3,7 @@ package kuit2.server.common.exception_handler;
 import jakarta.annotation.Priority;
 import kuit2.server.common.exception.RestaurantException;
 import kuit2.server.common.exception.UserException;
-import kuit2.server.common.response.BaseErrorResponse;
+import kuit2.server.common.response.BaseExceptionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,8 +19,8 @@ public class RestaurantExceptionControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserException.class)
-    public BaseErrorResponse handle_RestaurantException(RestaurantException e) {
+    public BaseExceptionResponse handle_RestaurantException(RestaurantException e) {
         log.error("[handle_RestaurantException]", e);
-        return new BaseErrorResponse(RESTAURANT_NOT_FOUND, e.getMessage());
+        return new BaseExceptionResponse(RESTAURANT_NOT_FOUND, e.getMessage());
     }
 }

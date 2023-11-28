@@ -1,7 +1,7 @@
 package kuit2.server.common.exception_handler;
 
 import jakarta.annotation.Priority;
-import kuit2.server.common.response.BaseErrorResponse;
+import kuit2.server.common.response.BaseExceptionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -20,15 +20,15 @@ public class DatabaseExceptionControllerAdvice {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(BadSqlGrammarException.class)
-    public BaseErrorResponse handle_BadSqlGrammarException(BadSqlGrammarException e) {
+    public BaseExceptionResponse handle_BadSqlGrammarException(BadSqlGrammarException e) {
         log.error("[handle_BadSqlGrammarException]", e);
-        return new BaseErrorResponse(BAD_SQL_GRAMMAR);
+        return new BaseExceptionResponse(BAD_SQL_GRAMMAR);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(DataAccessException.class)
-    public BaseErrorResponse handle_DataAccessException(DataAccessException e) {
+    public BaseExceptionResponse handle_DataAccessException(DataAccessException e) {
         log.error("[handle_DataAccessException]", e);
-        return new BaseErrorResponse(DATABASE_ERROR);
+        return new BaseExceptionResponse(DATABASE_ERROR);
     }
 }

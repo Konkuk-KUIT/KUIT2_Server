@@ -2,7 +2,7 @@ package kuit2.server.common.exception_handler;
 
 import jakarta.annotation.Priority;
 import kuit2.server.common.exception.UserException;
-import kuit2.server.common.response.BaseErrorResponse;
+import kuit2.server.common.response.BaseExceptionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,8 +18,8 @@ public class UserExceptionControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserException.class)
-    public BaseErrorResponse handle_UserException(UserException e) {
+    public BaseExceptionResponse handle_UserException(UserException e) {
         log.error("[handle_UserException]", e);
-        return new BaseErrorResponse(INVALID_USER_VALUE, e.getMessage());
+        return new BaseExceptionResponse(INVALID_USER_VALUE, e.getMessage());
     }
 }
