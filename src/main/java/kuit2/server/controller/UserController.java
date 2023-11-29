@@ -38,11 +38,21 @@ public class UserController {
     }
 
     /**
-     *
      * 회원 단건 조회
      */
     @GetMapping("/{userId}")
     public BaseResponse<GetUserResponse> getUserInfo(@PathVariable long userId) {
+        log.info("[UserController.getUserInfo]");
+
+        return new BaseResponse<>(userService.getUserInfo(userId));
+    }
+
+
+    /**
+     * 회원 단건 조회 v2
+     */
+    @GetMapping("/info")
+    public BaseResponse<GetUserResponse> getUserInfoJWT(@PreAuthorize long userId) {
         log.info("[UserController.getUserInfo]");
 
         return new BaseResponse<>(userService.getUserInfo(userId));
@@ -69,7 +79,7 @@ public class UserController {
     }
 
     /**
-     * 닉네임 변경
+     * 닉네임 변경 v1
      */
     @PatchMapping("/{userId}/nickname")
     public BaseResponse<String> modifyNickname(@PathVariable long userId,
@@ -83,7 +93,7 @@ public class UserController {
     }
 
     /**
-     * 닉네임 변경 usingJWT
+     * 닉네임 변경 v2 usingJWT
      */
     @PatchMapping("/nickname")
     public BaseResponse<String> modifyNicknameJWT(@PreAuthorize long userId,
