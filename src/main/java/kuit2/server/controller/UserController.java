@@ -1,6 +1,7 @@
 package kuit2.server.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import kuit2.server.common.argument_resolver.PreAuthorize;
 import kuit2.server.common.exception.UserException;
 import kuit2.server.common.response.BaseResponse;
 import kuit2.server.dto.user.*;
@@ -72,6 +73,20 @@ public class UserController {
      */
     @PatchMapping("/{userId}/nickname")
     public BaseResponse<String> modifyNickname(@PathVariable long userId,
+                                               @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
+        log.info("[UserController.modifyNickname]");
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+        userService.modifyNickname(userId, patchNicknameRequest.getNickname());
+        return new BaseResponse<>(null);
+    }
+
+    /**
+     * 닉네임 변경 usingJWT
+     */
+    @PatchMapping("/nickname")
+    public BaseResponse<String> modifyNicknameJWT(@PreAuthorize long userId,
                                                @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
         log.info("[UserController.modifyNickname]");
         if (bindingResult.hasErrors()) {
