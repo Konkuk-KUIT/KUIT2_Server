@@ -18,7 +18,7 @@ import static kuit2.server.common.response.status.BaseExceptionResponseStatus.RE
 public class RestaurantExceptionControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(UserException.class)
+    @ExceptionHandler(RestaurantException.class)
     public BaseExceptionResponse handle_RestaurantException(RestaurantException e) {
         log.error("[handle_RestaurantException]", e);
         return new BaseExceptionResponse(RESTAURANT_NOT_FOUND, e.getMessage());

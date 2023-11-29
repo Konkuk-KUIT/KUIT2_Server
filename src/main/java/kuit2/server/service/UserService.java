@@ -54,17 +54,6 @@ public class UserService {
         return new PostUserResponse(userId, jwt);
     }
 
-    public PostLoginResponse login(PostLoginRequest postLoginRequest) {
-        log.info("[UserService.login]");
-
-        Long logginedUserId = userDao.getUserIdByEmail(postLoginRequest.getEmail());
-        if(logginedUserId != null && passwordEncoder.matches(postLoginRequest.getPassword(), userDao.getPasswordByUserId(logginedUserId))){
-            return new PostLoginResponse(logginedUserId, null);
-        }
-
-        throw new UserException(USER_NOT_FOUND);
-    }
-
     public GetUserResponse getUserInfo(Long userId) {
         log.info("[UserService.getUserInfo");
 

@@ -31,7 +31,7 @@ public class AuthService {
         // TODO: 1. 이메일 유효성 확인
         long userId;
         try {
-            userId = userDao.getUserIdByEmail(email);
+            userId = userDao.getUserIdByEmail(email); //로그인 요청에 포함된 이메일을 가진 유저가 DB에 있는지 확인
         } catch (IncorrectResultSizeDataAccessException e) {
             throw new UserException(EMAIL_NOT_FOUND);
         }
