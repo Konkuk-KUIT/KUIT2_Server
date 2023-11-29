@@ -152,6 +152,16 @@ public class UserController {
     }
 
     /**
+     * 회원이 쓴 리뷰 조회 v2
+     */
+    @GetMapping("/reviews")
+    public BaseResponse<List<GetReviewResponse>> getReviewsJWT(@PreAuthorize long userId) {
+        log.info("UserController.getReviews");
+
+        return new BaseResponse<List<GetReviewResponse>>(userService.getReviews(userId));
+    }
+
+    /**
      * 찜하기
      */
     @PostMapping("/{userId}/favorites")
