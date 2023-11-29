@@ -132,6 +132,16 @@ public class UserController {
     }
 
     /**
+     * 유저장바구니 조회 v2
+     */
+    @GetMapping("/cart")
+    public BaseResponse<List<GetCartResponse>> getCartJWT(@PreAuthorize long userId) {
+        log.info("[UserController.getCart");
+
+        return new BaseResponse<List<GetCartResponse>>(userService.getCart(userId));
+    }
+
+    /**
      * 회원이 쓴 리뷰 조회
      */
     @GetMapping("/{userId}/reviews")
