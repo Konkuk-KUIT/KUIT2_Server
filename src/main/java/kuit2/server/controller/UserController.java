@@ -192,6 +192,16 @@ public class UserController {
     }
 
     /**
+     * 찜 취소 v2
+     */
+    @DeleteMapping("/favorites")
+    public BaseResponse<Object> deleteFavoriteJWT(@PreAuthorize long userId, @RequestParam long restaurantId) {
+        log.info("UserController.deleteFavorite");
+
+        return new BaseResponse<>(userService.deleteFavorite(userId, restaurantId));
+    }
+
+    /**
      * 찜 목록 조회
      */
     @GetMapping("/{userId}/favorites")
