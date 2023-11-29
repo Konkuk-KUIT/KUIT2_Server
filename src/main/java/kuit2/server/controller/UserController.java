@@ -59,16 +59,19 @@ public class UserController {
     /**
      * 닉네임 변경
      */
+
     @PatchMapping("/{userId}/nickname")
-    public BaseResponse<String> modifyNickname(@PathVariable long userId,
-                                               @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
-        log.info("[UserController.modifyNickname]");
+    public BaseResponse<Object> modifyUser_nickName(@PathVariable long userId,
+                                                    @Validated@RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult){
+        log.info("[UserController.modifyUser_nickName]");
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
         userService.modifyNickname(userId, patchNicknameRequest.getNickname());
         return new BaseResponse<>(null);
     }
+
+
 
     /**
      * 회원 목록 조회
