@@ -210,4 +210,14 @@ public class UserController {
 
         return new BaseResponse<GetFavoriteResponse>(userService.getFavorites(userId));
     }
+
+    /**
+     * 찜 목록 조회 v2
+     */
+    @GetMapping("/favorites")
+    public BaseResponse<GetFavoriteResponse> getFavoritesJWT(@PreAuthorize long userId) {
+        log.info("UserController.getFavorites");
+
+        return new BaseResponse<GetFavoriteResponse>(userService.getFavorites(userId));
+    }
 }
