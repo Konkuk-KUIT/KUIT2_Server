@@ -33,7 +33,7 @@ public class JwtProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .claim("userId", userId)
+                .claim("userId", userId) //payLoad에 이런식으로 값을 넣을 수 있다는 예시로, userId를 넣는 과정은 없어도 무방하다
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
                 .compact();
     }
