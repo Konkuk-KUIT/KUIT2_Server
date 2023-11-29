@@ -172,6 +172,16 @@ public class UserController {
     }
 
     /**
+     * 찜하기 v2
+     */
+    @PostMapping("/favorites")
+    public BaseResponse<Object> addFavoriteJWT(@PreAuthorize long userId, @Validated @RequestBody PostFavoriteRequest postFavoriteRequest, BindingResult bindingResult) {
+        log.info("UserController.addFavorite");
+
+        return new BaseResponse<>(userService.addFavorite(userId, postFavoriteRequest.getRestaurantId()));
+    }
+
+    /**
      * 찜 취소
      */
     @DeleteMapping("/{userId}/favorites")
