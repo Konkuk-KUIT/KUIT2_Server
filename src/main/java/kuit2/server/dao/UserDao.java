@@ -26,25 +26,23 @@ public class UserDao {
     }
 
     public boolean hasDuplicateEmail(String email) {
-        String sql = "select exists(select email from user where email=:email and status in ('active', 'dormant'))";
-        Map<String, Object> param = Map.of("email", email);
+        String sql = "select exists(select user_email from users where user_email=:email and user_status in ('일반','휴면'))";
+        Map<String, Object> param = Map.of("email",email);
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
 
     public boolean hasDuplicateNickName(String nickname) {
-        String sql = "select exists(select email from user where nickname=:nickname and status in ('active', 'dormant'))";
-        Map<String, Object> param = Map.of("nickname", nickname);
+        String sql = "select exists(select user_nickname from users where user_nickname=:nickname and user_status in ('일반','휴면'))";
+        Map<String, Object> param = Map.of("nickname",nickname);
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
 
     public long createUser(PostUserRequest postUserRequest) {
-        String sql = "insert into user(email, password, phone_number, nickname, profile_image) " +
-                "values(:email, :password, :phoneNumber, :nickname, :profileImage)";
-
+        String sql = "insert into users(user_email, user_password, user_phonenumber, user_nickname, user_name, user_currentaddress, user_imageurl)" +
+                "values(:email, :password, :phoneNumber, :nickname,:name, :currentAddress,:profileImage)";
         SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(sql, param, keyHolder);
-
+        jdbcTemplate.update(sql, param,keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
@@ -64,11 +62,12 @@ public class UserDao {
         return jdbcTemplate.update(sql, param);
     }
 
-    public int modifyNickname(long userId, String nickname) {
-        String sql = "update user set nickname=:nickname where user_id=:user_id";
+    public int modifyNickname(long userId, String nickName) {
+        String sql = "update users set user_nickname=:nickName where user_id=:userId";
         Map<String, Object> param = Map.of(
-                "nickname", nickname,
-                "user_id", userId);
+                "nickName",nickName,
+                "userId",userId
+        );
         return jdbcTemplate.update(sql, param);
     }
 
@@ -92,15 +91,15 @@ public class UserDao {
     }
 
     public long getUserIdByEmail(String email) {
-        String sql = "select user_id from user where email=:email and status='active'";
+        String sql = "select user_id from users where user_email=:email and user_status='일반'";
         Map<String, Object> param = Map.of("email", email);
         return jdbcTemplate.queryForObject(sql, param, long.class);
     }
 
 
     public String getPasswordByUserId(long userId) {
-        String sql = "select password from user where user_id=:user_id and status='active'";
-        Map<String, Object> param = Map.of("user_id", userId);
+        String sql = "select user_password from users where user_id=:userId and user_status='일반'";
+        Map<String, Object> param = Map.of("userId", userId);
         return jdbcTemplate.queryForObject(sql, param, String.class);
     }
 }

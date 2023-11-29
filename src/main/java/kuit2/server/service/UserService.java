@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class UserService {
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+
 
     public PostUserResponse signUp(PostUserRequest postUserRequest) {
         log.info("[UserService.createUser]");
