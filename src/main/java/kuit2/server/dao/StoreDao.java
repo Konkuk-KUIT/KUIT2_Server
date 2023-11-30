@@ -1,6 +1,8 @@
 package kuit2.server.dao;
 
+import kuit2.server.dto.store.GetStoreResponse;
 import kuit2.server.dto.store.PostStoreRequest;
+import kuit2.server.dto.user.GetUserResponse;
 import kuit2.server.dto.user.PostUserRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -11,6 +13,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -38,5 +41,25 @@ public class StoreDao {
         jdbcTemplate.update(sql, param, keyHolder);
 
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
+    }
+
+    public List<GetStoreResponse> getStores(String category, String status) {
+        String sql = "select name, category, address, phone, min_delivery_price, status from store " +
+                "where category like :category and status=:status";
+
+        Map<String, Object> param = Map.of(
+                "category", "%" + category + "%",
+                "status", status);
+
+        return jdbcTemplate.query(sql, param,
+                (rs, rowNum) -> new GetStoreResponse(
+                        rs.getString("name"),
+                        rs.getString("category"),
+                        rs.getString("address"),
+                        rs.getString("phone"),
+                        rs.getInt("min_delivery_price"),
+                        rs.getString("status")
+                )
+        );
     }
 }
