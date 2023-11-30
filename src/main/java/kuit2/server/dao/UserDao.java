@@ -41,6 +41,8 @@ public class UserDao {
         String sql = "insert into user(email, password, phone_number, nickname, profile_image) " +
                 "values(:email, :password, :phoneNumber, :nickname, :profileImage)";
 
+        // BeanPropertySqlParameterSource 는 빈 객체를 Map 객체로 변환하는 객체
+        // SqlParameterSource 는 Sql 에 들어갈 parameter Map 객체를 처리하는 인터페이스
         SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(sql, param, keyHolder);
