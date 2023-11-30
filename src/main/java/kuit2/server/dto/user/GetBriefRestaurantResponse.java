@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class GetBriefRestaurantResponse {
 
+    private long restaurantId;
     private String restaurantName;
     private int star_count;
     private int review_count;

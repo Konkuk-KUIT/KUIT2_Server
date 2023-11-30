@@ -30,13 +30,14 @@ public class RestaurantDao {
 
 
     public GetBriefRestaurantResponse getBriefRestaurantById(long restaurantId) {
-        String sql = "select name, min_order_price from restaurant where restaurant_id=:restaurant_id";
+        String sql = "select restaurant_id, name, min_order_price from restaurant where restaurant_id=:restaurant_id";
         Map<String, Object> param = Map.of("restaurant_id", restaurantId);
         return jdbcTemplate.queryForObject(
                 sql,
                 param,
                 (resultSet, rowNum) -> {
                     GetBriefRestaurantResponse getBriefRestaurantResponse = new GetBriefRestaurantResponse();
+                    getBriefRestaurantResponse.setRestaurantId((resultSet.getLong("restaurant_id")));
                     getBriefRestaurantResponse.setRestaurantName(resultSet.getString("name"));
                     getBriefRestaurantResponse.setStar_count(0);
                     getBriefRestaurantResponse.setReview_count(0);
@@ -61,13 +62,14 @@ public class RestaurantDao {
     }
 
     public List<GetBriefRestaurantResponse> getRestaurants(long categoryId, String sortBy, String minOrderPrice) {
-        String sql = "select r.name, r.min_order_price from restaurant As r join restaurant_category rc on r.restaurant_id = rc.restaurant_id where rc.category_id=:categoryId and r.min_order_price > :minOrderPrice;";
+        String sql = "select r.restaurant_id, r.name, r.min_order_price from restaurant As r join restaurant_category rc on r.restaurant_id = rc.restaurant_id where rc.category_id=:categoryId and r.min_order_price > :minOrderPrice;";
         Map<String, Object> param = Map.of("categoryId", categoryId, "minOrderPrice", minOrderPrice);
         return jdbcTemplate.query(
                 sql,
                 param,
                 (resultSet, rowNum) -> {
                     GetBriefRestaurantResponse getBriefRestaurantResponse = new GetBriefRestaurantResponse();
+                    getBriefRestaurantResponse.setRestaurantId((resultSet.getLong("restaurant_id")));
                     getBriefRestaurantResponse.setRestaurantName(resultSet.getString("name"));
                     getBriefRestaurantResponse.setStar_count(0);
                     getBriefRestaurantResponse.setReview_count(0);
