@@ -37,8 +37,8 @@ public class PostUserRequest {
     @Nullable
     private String profileImage;
 
-/*    @NotBlank(message = "login_type: {NotBlank}")
-    private String login_type;*/
+    @NotBlank(message = "login_type: {NotBlank}")
+    private String login_type;
 
     public void resetPassword(String encodedPassword) {
         this.password = encodedPassword;
