@@ -1,10 +1,12 @@
 package kuit2.server.dao;
 
+import kuit2.server.common.exception.RestaurantException;
 import kuit2.server.dto.restaurant.GetBriefMenuResponse;
 import kuit2.server.dto.restaurant.GetCategoriesResponse;
 import kuit2.server.dto.restaurant.GetRestaurantMenuResponse;
 import kuit2.server.dto.user.GetBriefRestaurantResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -17,6 +19,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static kuit2.server.common.response.status.BaseExceptionResponseStatus.RESTAURANT_NOT_FOUND;
 
 @Slf4j
 @Repository
@@ -32,21 +36,25 @@ public class RestaurantDao {
     public GetBriefRestaurantResponse getBriefRestaurantById(long restaurantId) {
         String sql = "select restaurant_id, name, min_order_price from restaurant where restaurant_id=:restaurant_id";
         Map<String, Object> param = Map.of("restaurant_id", restaurantId);
-        return jdbcTemplate.queryForObject(
-                sql,
-                param,
-                (resultSet, rowNum) -> {
-                    GetBriefRestaurantResponse getBriefRestaurantResponse = new GetBriefRestaurantResponse();
-                    getBriefRestaurantResponse.setRestaurantId((resultSet.getLong("restaurant_id")));
-                    getBriefRestaurantResponse.setRestaurantName(resultSet.getString("name"));
-                    getBriefRestaurantResponse.setStar_count(0);
-                    getBriefRestaurantResponse.setReview_count(0);
-                    getBriefRestaurantResponse.setRepresentMenu(null);
-                    getBriefRestaurantResponse.setEta(null);
-                    getBriefRestaurantResponse.setMinOrderPrice(resultSet.getFloat("min_order_price"));
+        try {
+            return jdbcTemplate.queryForObject(
+                    sql,
+                    param,
+                    (resultSet, rowNum) -> {
+                        GetBriefRestaurantResponse getBriefRestaurantResponse = new GetBriefRestaurantResponse();
+                        getBriefRestaurantResponse.setRestaurantId((resultSet.getLong("restaurant_id")));
+                        getBriefRestaurantResponse.setRestaurantName(resultSet.getString("name"));
+                        getBriefRestaurantResponse.setStar_count(0);
+                        getBriefRestaurantResponse.setReview_count(0);
+                        getBriefRestaurantResponse.setRepresentMenu(null);
+                        getBriefRestaurantResponse.setEta(null);
+                        getBriefRestaurantResponse.setMinOrderPrice(resultSet.getFloat("min_order_price"));
 
-                    return getBriefRestaurantResponse;
-                });
+                        return getBriefRestaurantResponse;
+                    });
+        } catch (EmptyResultDataAccessException e) {
+            throw new RestaurantException(RESTAURANT_NOT_FOUND);
+        }
     }
 
     public GetCategoriesResponse getCategories() {
