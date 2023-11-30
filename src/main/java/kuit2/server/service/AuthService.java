@@ -29,6 +29,7 @@ public class AuthService {
         String email = authRequest.getEmail();
 
         // TODO: 1. 이메일 유효성 확인
+        // request로 온 이메일이 DB에 저장된 이메일인지를 확인
         long userId;
         try {
             userId = userDao.getUserIdByEmail(email);
@@ -47,6 +48,7 @@ public class AuthService {
 
     private void validatePassword(String password, long userId) {
         String encodedPassword = userDao.getPasswordByUserId(userId);
+        // 스프링에서 제공해주는 PasswordEncoder를 통해서 encoding된 패스워드를 복호화 & 복호화된 패스워드와 request로 들어온 패스워드를 비교
         if (!passwordEncoder.matches(password, encodedPassword)) {
             throw new UserException(PASSWORD_NO_MATCH);
         }

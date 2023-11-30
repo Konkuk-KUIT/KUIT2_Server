@@ -46,15 +46,15 @@ public class UserService {
         long userId = userDao.createUser(postUserRequest);
 
         // TODO: 4. JWT 토큰 생성
-        String jwt = jwtProvider.createToken(postUserRequest.getEmail(), userId);
+        String jwt = jwtProvider.createToken(postUserRequest.getEmail(), userId);                   // jwtProvider를 통해 토큰 생성
 
-        return new PostUserResponse(userId, jwt);
+        return new PostUserResponse(userId, jwt);               // 생성한 토큰을 response에 넣어줌
     }
 
-    public void modifyUserStatus_dormant(long userId) {
-        log.info("[UserService.modifyUserStatus_dormant]");
+    public void modifyUserStatus_inactive(long userId) {
+        log.info("[UserService.modifyUserStatus_inactive]");
 
-        int affectedRows = userDao.modifyUserStatus_dormant(userId);
+        int affectedRows = userDao.modifyUserStatus_inactive(userId);
         if (affectedRows != 1) {
             throw new DatabaseException(DATABASE_ERROR);
         }

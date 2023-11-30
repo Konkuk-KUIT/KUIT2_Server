@@ -13,8 +13,9 @@ public class PostStoreRequestValidator implements Validator {
         return PostStoreRequest.class.isAssignableFrom(clazz);          // PostStoreRequest에 대한 지원여부 검사
     }
 
+
     @Override
     public void validate(Object target, Errors errors){
-
+        PostStoreRequest postStoreRequest = (PostStoreRequest) target;
     }
 }

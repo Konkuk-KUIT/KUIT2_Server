@@ -80,10 +80,10 @@ public class UserController {
     /**
      * 회원 휴면
      */
-    @PatchMapping("/{userId}/dormant")
+    @PatchMapping("/{userId}/inactive")
     public BaseResponse<Object> modifyUserStatus_dormant(@PathVariable long userId) {
-        log.info("[UserController.modifyUserStatus_dormant]");
-        userService.modifyUserStatus_dormant(userId);
+        log.info("[UserController.modifyUserStatus_inactive]");
+        userService.modifyUserStatus_inactive(userId);
         return new BaseResponse<>(null);
     }
 
@@ -125,4 +125,5 @@ public class UserController {
         }
         return new BaseResponse<>(userService.getUsers(nickname, email, status));
     }
+
 }

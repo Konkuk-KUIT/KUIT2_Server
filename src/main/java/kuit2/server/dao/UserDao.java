@@ -48,10 +48,10 @@ public class UserDao {
         return Objects.requireNonNull(keyHolder.getKey()).longValue();              // userID를 리턴
     }
 
-    public int modifyUserStatus_dormant(long userId) {
+    public int modifyUserStatus_inactive(long userId) {
         String sql = "update user set status=:status where user_id=:user_id";
         Map<String, Object> param = Map.of(
-                "status", "dormant",
+                "status", "inactive",
                 "user_id", userId);
         return jdbcTemplate.update(sql, param);
     }

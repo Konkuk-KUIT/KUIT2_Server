@@ -7,11 +7,16 @@ import kuit2.server.dao.UserDao;
 import kuit2.server.dto.store.GetStoreResponse;
 import kuit2.server.dto.store.PostStoreRequest;
 import kuit2.server.dto.store.PostStoreResponse;
+import kuit2.server.util.Page;
+import kuit2.server.util.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static kuit2.server.common.response.status.BaseExceptionResponseStatus.DATABASE_ERROR;
 import static kuit2.server.common.response.status.BaseExceptionResponseStatus.DUPLICATE_STORENAME;
@@ -21,13 +26,22 @@ import static kuit2.server.common.response.status.BaseExceptionResponseStatus.DU
 @RequiredArgsConstructor
 public class StoreService {
     private final StoreDao storeDao;
+    private final JwtProvider jwtProvider;
+    private final PasswordEncoder passwordEncoder;
 
     public PostStoreResponse signUp(PostStoreRequest postStoreRequest) {
+        // TODO: 1. 가게 이름 중복 검사
         validateStoreName(postStoreRequest.getStoreName());
 
+        // TODO: 2. password 암호화
+        String encodedPassword = passwordEncoder.encode(postStoreRequest.getPassword());
+
+        // TODO: 3. 암호화한 password DB insert & storeId 반환
         long storeId = storeDao.createStore(postStoreRequest);
 
-        return new PostStoreResponse(storeId);
+        // TODO: 4. 가게 등록시 JWT 토큰 생성
+        String jwt = jwtProvider.createToken(postStoreRequest.getStoreName(), storeId);
+        return new PostStoreResponse(storeId, jwt);
     }
 
     private void validateStoreName(String storeName){
@@ -62,7 +76,10 @@ public class StoreService {
     }
 
 
+    public List<GetStoreResponse> getStoresByPage(long pageNumber) {
+        log.info("[StoreService.getStoresByPage");
 
-
+        return storeDao.getStoresByPage(pageNumber);
+    }
 }
 

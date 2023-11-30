@@ -9,10 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @Priority(0)            // BaseExceptionControllerAdvice보다 우선순위 높음
-@RestController
+@RestControllerAdvice
 public class JwtExceptionControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

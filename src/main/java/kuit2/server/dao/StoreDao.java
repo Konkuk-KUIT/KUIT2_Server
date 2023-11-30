@@ -62,10 +62,10 @@ public class StoreDao {
 
     public List<GetStoreResponse> getStores(String storename, String status) {
         String sql = "select store_name, running_time, address, profile_image, phone_number, status from Stores" +
-                "where store_name like :nickname and status=:status";
+                "where store_name=:storename, status=:status";
 
         Map<String, Object> param = Map.of(
-                "store_name", "%" + storename + "%s",
+                "store_name", storename,
                 "status", status);
 
         return jdbcTemplate.query(sql, param, (rs, rowNum) -> new GetStoreResponse(
@@ -75,5 +75,22 @@ public class StoreDao {
                 rs.getString("profile_image"),
                 rs.getString("phone_number"),
                 rs.getString("status")));
+    }
+
+
+    public List<GetStoreResponse> getStoresByPage(long pageNumber) {
+        String sql = "select store_name, running_time, address, profile_image, phone_number, status from Stores" +
+                "where status=:'active' limit 20 offset=:pageNumber";           // 한 페이지에 20개 데이터
+
+        Map<String, Object> param = Map.of("offset", pageNumber);
+
+        return jdbcTemplate.query(sql, param, (rs, rowNum) -> new GetStoreResponse(
+                rs.getString("store_name"),
+                rs.getString("running_time"),
+                rs.getString("address"),
+                rs.getString("profile_image"),
+                rs.getString("phone_number"),
+                rs.getString("status")
+        ));
     }
 }

@@ -53,7 +53,7 @@ public class StoreController {
 
 
     /**
-     * 가게 휴먼 전환
+     * 가게 휴면 전환
      */
     @PatchMapping("/{storeId}/inactive")
     public BaseResponse<Object> modifyStoreStatus_inactive(@PathVariable long storeId){
@@ -79,7 +79,7 @@ public class StoreController {
     }
 
     /**
-     * 가게 조회 -> 가게 이름으로 조회
+     * 가게 목록 조회
      */
     @GetMapping("")
     public BaseResponse<List<GetStoreResponse>> getStores(
@@ -92,6 +92,18 @@ public class StoreController {
             throw new StoreException(INVALID_STORE_STATUS);
         }
         return new BaseResponse<>(storeService.getStores(storename, status));
+    }
+
+    /**
+     * 가게 목록 조회 -> page별로 구분
+     */
+    @GetMapping("/list/{page-number}")
+    public BaseResponse<List<GetStoreResponse>> getStoresByPage(
+            @RequestParam(required = false, defaultValue = "") long pageNumber
+    ){
+        log.info("[StoreController.getStoresByPage");
+
+        return new BaseResponse<>(storeService.getStoresByPage(pageNumber));
     }
 
 

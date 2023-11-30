@@ -21,18 +21,18 @@ import static kuit2.server.common.response.status.BaseExceptionResponseStatus.*;
 @Component
 public class JwtProvider {
 
-    //@Value("${secret.jwt-secret-key}")
-    private String JWT_SECRET_KEY = "JiaY9e2iDtCkvvmj3CoMqqby2746PTh5KIz23VxjA84=aldfeafsod";
+    @Value("${secret.jwt-secret-key}")                  // sign작업을 위한 우리 서버의 개인키
+    private String JWT_SECRET_KEY;
 
-    //@Value("${secret.jwt-expired-in}")
-    private long JWT_EXPIRED_IN = 3600000;
+    @Value("${secret.jwt-expired-in}")                  // 토큰의 만료 시간(밀리초 기준, 보통 3600000 (=1시간))
+    private long JWT_EXPIRED_IN;
 
     public String createToken(String principal, long userId) {
         log.info("JWT key={}", JWT_SECRET_KEY);
 
         Claims claims = Jwts.claims().setSubject(principal);
         Date now = new Date();
-        Date validity = new Date(now.getTime() + JWT_EXPIRED_IN);
+        Date validity = new Date(now.getTime() + JWT_EXPIRED_IN);               // 토큰의 만료시간
 
         byte[] keyBytes = Decoders.BASE64.decode(JWT_SECRET_KEY);
         Key secretKey = Keys.hmacShaKeyFor(keyBytes);
