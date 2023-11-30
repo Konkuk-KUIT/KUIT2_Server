@@ -61,9 +61,9 @@ public class RestaurantDao {
         return getCategoriesResponse;
     }
 
-    public List<GetBriefRestaurantResponse> getRestaurants(long categoryId, String sortBy, String minOrderPrice) {
-        String sql = "select r.restaurant_id, r.name, r.min_order_price from restaurant As r join restaurant_category rc on r.restaurant_id = rc.restaurant_id where rc.category_id=:categoryId and r.min_order_price > :minOrderPrice;";
-        Map<String, Object> param = Map.of("categoryId", categoryId, "minOrderPrice", minOrderPrice);
+    public List<GetBriefRestaurantResponse> getRestaurants(long lastId, long categoryId, String sortBy, String minOrderPrice) {
+        String sql = "select r.restaurant_id, r.name, r.min_order_price from restaurant As r join restaurant_category rc on r.restaurant_id = rc.restaurant_id where rc.category_id=:categoryId and r.min_order_price > :minOrderPrice limit 30 offset :lastId;";
+        Map<String, Object> param = Map.of("categoryId", categoryId, "minOrderPrice", minOrderPrice, "lastId", lastId);
         return jdbcTemplate.query(
                 sql,
                 param,

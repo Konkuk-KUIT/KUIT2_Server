@@ -33,10 +33,15 @@ public class RestaurantController {
      * 음식점 목록 조회
      */
     @GetMapping("/{categoryId}")
-    public BaseResponse<List<GetBriefRestaurantResponse>> getRestaurants(@PathVariable long categoryId, @RequestParam(name = "sort-by") String sortBy, @RequestParam(name = "min-order-price") String minOrderPrice) {
+    public BaseResponse<List<GetBriefRestaurantResponse>> getRestaurants(
+            @PathVariable long categoryId,
+            @RequestParam(name = "lastId", required = false, defaultValue = "0") long lastId,
+            @RequestParam(name = "sort-by", required = false) String sortBy,
+            @RequestParam(name = "min-order-price", required = false) String minOrderPrice) {
+
         log.info("RestaurantController.getRestaurants");
 
-        return new BaseResponse<>(restaurantService.getRestaurants(categoryId, sortBy, minOrderPrice));
+        return new BaseResponse<>(restaurantService.getRestaurants(lastId, categoryId, sortBy, minOrderPrice));
     }
 
     /**

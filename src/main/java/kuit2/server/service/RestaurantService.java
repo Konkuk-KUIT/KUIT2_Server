@@ -27,10 +27,10 @@ public class RestaurantService {
         return restaurantDao.getCategories();
     }
 
-    public List<GetBriefRestaurantResponse> getRestaurants(long categoryId, String sortBy, String minOrderPrice) {
+    public List<GetBriefRestaurantResponse> getRestaurants(long lastId, long categoryId, String sortBy, String minOrderPrice) {
         log.info("[RestaurantService.getRestaurants]");
 
-        return restaurantDao.getRestaurants(categoryId, sortBy, minOrderPrice);
+        return restaurantDao.getRestaurants(lastId, categoryId, sortBy, minOrderPrice);
     }
 
     public List<GetRestaurantMenuResponse> getRestaurantMenus(long restaurantId) {
