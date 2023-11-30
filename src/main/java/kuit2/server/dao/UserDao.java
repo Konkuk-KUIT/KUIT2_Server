@@ -40,7 +40,7 @@ public class UserDao {
 
     public long createUser(PostUserRequest postUserRequest) {
         String sql = "insert into user(email, password, phone_number, nickname, profile_image) " +
-                "values(:email, :password, :phoneNumber, :nickname, :profileImage)";
+                "values(:email, :password, :phoneNumber, :nickname, :profileImage)"; // :login_type??
 
         SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
         KeyHolder keyHolder = new GeneratedKeyHolder();
