@@ -44,6 +44,7 @@ public class UserService {
 
         // TODO: 4. JWT 토큰 생성
         String jwt = jwtProvider.createToken(postUserRequest.getEmail(), userId);
+        // 여기서 토큰 생성해서 반환해줌
 
         return new PostUserResponse(userId, jwt);
     }
