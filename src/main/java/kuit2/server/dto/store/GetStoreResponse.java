@@ -13,4 +13,10 @@ public class GetStoreResponse {
     private String image;
     private String category;
     private double rating;
+    private boolean hasNext;
+
+    public void setHasNext(boolean hasNext) {
+        this.hasNext = hasNext;
+    }
+
 }

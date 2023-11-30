@@ -31,9 +31,9 @@ public class StoreController {
     * 가게 목록 조회
      */
     @GetMapping("")
-    public BaseResponse<List<GetStoreResponse>> getStoresByCategory(@RequestParam String category) {
+    public BaseResponse<List<GetStoreResponse>> getStoresByCategory(@RequestParam String category, @RequestParam(defaultValue = "0") long lastId) {
         log.info("[StoreController.getStores]");
-        return new BaseResponse<>(storeService.getStoresByCategory(category));
+        return new BaseResponse<>(storeService.getStoresByCategory(category, lastId));
     }
 
 

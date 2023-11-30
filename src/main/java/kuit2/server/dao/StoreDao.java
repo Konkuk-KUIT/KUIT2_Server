@@ -29,13 +29,15 @@ public class StoreDao {
         );
     }
 
-    public List<GetStoreResponse> getStoresByCategory(String category) {
+    public List<GetStoreResponse> getStoresByCategory(String category, long lastId) {
         log.info("[StoreDao.getStores]");
+
         String sql = "SELECT name, phone_number, order_place, min_order_price, image, category, rating " +
                 "FROM store " +
-                "WHERE category = :category and status = 'active'";
-        Map<String, Object> param = Map.of("category", category);
-        return jdbcTemplate.query(sql, param,
+                "WHERE category = :category and status = 'active' and store_id > :lastId LIMIT 6";
+        Map<String, Object> param = Map.of("category", category, "lastId", lastId);
+
+        List<GetStoreResponse> results = jdbcTemplate.query(sql, param,
                 (rm, rowNum) -> new GetStoreResponse(
                         rm.getString("name"),
                         rm.getString("phone_number"),
@@ -43,7 +45,18 @@ public class StoreDao {
                         rm.getLong("min_order_price"),
                         rm.getString("image"),
                         rm.getString("category"),
-                        rm.getDouble("rating"))
-                );
+                        rm.getDouble("rating"),
+                        Boolean.TRUE)
+        );
+        return paging(results);
+    }
+
+    private List<GetStoreResponse> paging(List<GetStoreResponse> results) {
+        if (results.size() == 6) {
+            results.remove(results.size() - 1);
+        } else {
+            results.get(results.size() - 1).setHasNext(Boolean.FALSE);
+        }
+        return results;
     }
 }
