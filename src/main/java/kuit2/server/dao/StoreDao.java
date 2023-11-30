@@ -82,7 +82,7 @@ public class StoreDao {
         String sql = "select store_name, running_time, address, profile_image, phone_number, status from Stores" +
                 "where status=:'active' limit 20 offset=:pageNumber";           // 한 페이지에 20개 데이터
 
-        Map<String, Object> param = Map.of("offset", pageNumber);
+        Map<String, Object> param = Map.of();
 
         return jdbcTemplate.query(sql, param, (rs, rowNum) -> new GetStoreResponse(
                 rs.getString("store_name"),
