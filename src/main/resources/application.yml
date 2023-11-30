@@ -12,6 +12,7 @@ spring:
     activate:
       on-profile: "localDB"
 
+
   datasource:
     url: ${DATASOURCE_URL_LOCAL}
     username: ${DATASOURCE_USERNAME}

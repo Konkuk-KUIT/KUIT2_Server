@@ -14,7 +14,7 @@ import static kuit2.server.common.response.status.BaseExceptionResponseStatus.BA
 import static kuit2.server.common.response.status.BaseExceptionResponseStatus.DATABASE_ERROR;
 
 @Slf4j
-@Priority(0)
+@Priority(0)            // BaseExceptionControllerAdvice보다 우선순위 높음
 @RestControllerAdvice
 public class DatabaseExceptionControllerAdvice {
 

@@ -19,14 +19,14 @@ import java.util.Objects;
 @Repository
 public class UserDao {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate;          // NamedParameterJdbcTemplate 사용
 
     public UserDao(DataSource dataSource) {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
     public boolean hasDuplicateEmail(String email) {
-        String sql = "select exists(select email from user where email=:email and status in ('active', 'dormant'))";
+        String sql = "select exists(select email from user where email=:email and status in ('active', 'dormant'))";            // 중복 email이 존재하는지 select(이중 쿼리문 사용)
         Map<String, Object> param = Map.of("email", email);
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
@@ -45,13 +45,13 @@ public class UserDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(sql, param, keyHolder);
 
-        return Objects.requireNonNull(keyHolder.getKey()).longValue();
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();              // userID를 리턴
     }
 
-    public int modifyUserStatus_dormant(long userId) {
+    public int modifyUserStatus_inactive(long userId) {
         String sql = "update user set status=:status where user_id=:user_id";
         Map<String, Object> param = Map.of(
-                "status", "dormant",
+                "status", "inactive",
                 "user_id", userId);
         return jdbcTemplate.update(sql, param);
     }
