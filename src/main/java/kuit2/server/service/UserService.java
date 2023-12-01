@@ -98,6 +98,11 @@ public class UserService {
         return userDao.getUsers(nickname, email, status);
     }
 
+    public UserResponsePage getUsersByPage(String status, long lastId){
+        log.info("[UserService.getUsersByPage]");
+        return userDao.getUsersByPage(status, lastId);
+    }
+
     public GetUserResponse getUserById(Long userId) {
         return userDao.getUserById(userId);
     }

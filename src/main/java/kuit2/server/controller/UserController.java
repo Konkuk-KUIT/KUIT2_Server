@@ -126,5 +126,17 @@ public class UserController {
         return new BaseResponse<>(userService.getUserById(userId));
     }
 
+    @GetMapping("/list")
+    public BaseResponse<UserResponsePage> getUsersByPage(
+            @RequestParam(required = false, defaultValue = "active") String status,
+            @RequestParam(defaultValue = "0") Long lastId) {
+        if (!status.equals("active") && !status.equals("dormant") && !status.equals("deleted")) {
+            throw new UserException(INVALID_USER_STATUS);
+        }
+
+        return new BaseResponse<>(userService.getUsersByPage(status, lastId));
+
+    }
+
 
 }
