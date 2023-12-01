@@ -71,7 +71,7 @@ public class RestaurantDao {
 
         GetRestaurantResponse getRestaurantResponse = new GetRestaurantResponse();
 
-        String sql = "select r.restaurant_id, r.name, r.min_order_price from restaurant As r join restaurant_category rc on r.restaurant_id = rc.restaurant_id where rc.category_id=:categoryId and r.min_order_price > :minOrderPrice limit 1 offset :lastId;";
+        String sql = "select r.restaurant_id, r.name, r.min_order_price from restaurant As r join restaurant_category rc on r.restaurant_id = rc.restaurant_id where rc.category_id=:categoryId and r.min_order_price > :minOrderPrice limit 2 offset :lastId;";
         Map<String, Object> param = Map.of("categoryId", categoryId, "minOrderPrice", minOrderPrice, "lastId", lastId);
 
         List<GetBriefRestaurantResponse> restaurants = jdbcTemplate.query(
@@ -92,7 +92,7 @@ public class RestaurantDao {
 
         long lastRestaurantId = restaurants.isEmpty() ? lastId : restaurants.get(restaurants.size() - 1).getRestaurantId();
 
-        boolean hasNext = hasNext(lastRestaurantId);
+        boolean hasNext = hasNext(lastRestaurantId, categoryId);
 
 
         getRestaurantResponse.setHasNext(hasNext);
@@ -102,11 +102,12 @@ public class RestaurantDao {
         return getRestaurantResponse;
     }
 
-    public boolean hasNext(long lastId) {
-        String sql = "SELECT EXISTS (SELECT 1 FROM restaurant WHERE restaurant_id > :lastId LIMIT 1)";
+    public boolean hasNext(long lastId, long categoryId) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM restaurant join restaurant_category rc on restaurant.restaurant_id = rc.restaurant_id WHERE restaurant.restaurant_id > :lastId and rc.category_id = :categoryId LIMIT 1);";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("lastId", lastId + 1);
+        parameters.addValue("lastId", lastId);
+        parameters.addValue("categoryId", categoryId);
 
         return jdbcTemplate.queryForObject(sql, parameters, Boolean.class);
     }
