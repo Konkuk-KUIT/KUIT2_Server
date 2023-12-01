@@ -45,7 +45,17 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     USER_NOT_FOUND(4003, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 회원입니다."),
     PASSWORD_NO_MATCH(4004, HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다."),
     INVALID_USER_STATUS(4005, HttpStatus.BAD_REQUEST.value(), "잘못된 회원 status 값입니다."),
-    EMAIL_NOT_FOUND(4006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다.");
+    EMAIL_NOT_FOUND(4006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다."),
+    DUPLICATE_NAME(5003, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 이름입니다."),
+    INVALID_STORE_VALUE(5000, HttpStatus.BAD_REQUEST.value(), "가게등록 요청에서 잘못된 값이 존재합니다."),
+    INVALID_STORE_STATUS(4005, HttpStatus.BAD_REQUEST.value(), "잘못된 가게 status 값입니다."),
+    INVALID_ADDRESS_VALUE(5000, HttpStatus.BAD_REQUEST.value(), "주소 등록 요청에서 잘못된 값이 존재합니다."),
+    INVALID_ADDRESS_STATUS(4005, HttpStatus.BAD_REQUEST.value(), "잘못된 주소 status 값입니다."),
+    DUPLICATE_CATEGORY(5003, HttpStatus.BAD_REQUEST.value(), "해당 카테고리에는 이미 주소가 존재합니다."),
+    INVALID_MENU_VALID(5000, HttpStatus.BAD_REQUEST.value(), "메뉴 등록 요청에서 잘못된 값이 존재합니다."),
+    INVALID_MENU_STATUS(4005, HttpStatus.BAD_REQUEST.value(), "잘못된 메뉴 status 값입니다.");
+
+
 
     private final int code;
     private final int status;
