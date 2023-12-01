@@ -77,9 +77,8 @@ public class UserService {
         }
     }
 
-    public List<GetUserResponse> getUsers(String nickname, String email, String status, long lastId) {
+    public GetUserResponse2 getUsers(String nickname, String email, String status, long lastId) {
         log.info("[UserService.getUsers]");
-        log.info("[UserService.getUsers -last id]" +lastId);
         return userDao.getUsers(nickname, email, status, lastId);
     }
 

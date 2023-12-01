@@ -74,7 +74,7 @@ public class UserController {
      * 회원 목록 조회
      */
     @GetMapping("")
-    public BaseResponse<List<GetUserResponse>> getUsers(
+    public BaseResponse<GetUserResponse2> getUsers(
             @RequestParam(required = false, defaultValue = "") String nickname,
             @RequestParam(required = false, defaultValue = "") String email,
             @RequestParam(required = false, defaultValue = "A") String status,
