@@ -19,6 +19,7 @@ import static kuit2.server.common.response.status.BaseExceptionResponseStatus.*;
 @RestControllerAdvice
 public class BaseExceptionControllerAdvice {
 
+    //유효하지 않은 url 요청이 왔을 때, 예외처리
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({BadRequestException.class, NoHandlerFoundException.class, TypeMismatchException.class})
     public BaseErrorResponse handle_BadRequest(Exception e) {
@@ -35,6 +36,7 @@ public class BaseExceptionControllerAdvice {
     }
      */
 
+    //유효한 url로 들어왔을 때 이 url이 지원하지 않는 http method 로 요청을 했을 때 예외
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public BaseErrorResponse handle_HttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
@@ -56,6 +58,8 @@ public class BaseExceptionControllerAdvice {
         return new BaseErrorResponse(e.getExceptionStatus());
     }
 
+    //어떠한 ControllerAdvice를 거치더라도 해결 안된 Exception 처리
+    //다른 ControllerAdvice에 Priority를 부여하여 다른걸 거치고 BaseExceptionControllerAdvice로 올 수 있게 처리함.
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(RuntimeException.class)
     public BaseErrorResponse handle_RuntimeException(Exception e) {

@@ -1,6 +1,7 @@
 package kuit2.server.dao;
 
 import kuit2.server.dto.user.GetUserResponse;
+import kuit2.server.dto.user.GetUserResponse2;
 import kuit2.server.dto.user.PostUserRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -19,6 +20,7 @@ import java.util.Objects;
 @Repository
 public class UserDao {
 
+    //7-8주차 JdbcTemplate 강의 참조
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     public UserDao(DataSource dataSource) {
@@ -38,8 +40,8 @@ public class UserDao {
     }
 
     public long createUser(PostUserRequest postUserRequest) {
-        String sql = "insert into user(email, password, phone_number, nickname, profile_image) " +
-                "values(:email, :password, :phoneNumber, :nickname, :profileImage)";
+        String sql = "insert into user(email, password, phone_number, nickname, profile_image, login_type) " +
+                "values(:email, :password, :phoneNumber, :nickname, :profileImage, :login_type)";
 
         SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -72,23 +74,39 @@ public class UserDao {
         return jdbcTemplate.update(sql, param);
     }
 
-    public List<GetUserResponse> getUsers(String nickname, String email, String status) {
-        String sql = "select email, phone_number, nickname, profile_image, status from user " +
-                "where nickname like :nickname and email like :email and status=:status";
+    public GetUserResponse2 getUsers(String nickname, String email, String status, long lastId) {
+        String countSql = "SELECT COUNT(*) AS total_users FROM user " +
+                "WHERE user_id > :user_id " +
+                "AND nickname LIKE :nickname " +
+                "AND email LIKE :email " +
+                "AND status = :status";
+
+        String sql = "select user_id, email, phone_number, nickname, profile_image, status from user " +
+                "where user_id > :user_id and nickname like :nickname and email like :email and status=:status "+
+                "limit 10";
 
         Map<String, Object> param = Map.of(
                 "nickname", "%" + nickname + "%",
                 "email", "%" + email + "%",
-                "status", status);
+                "status", status,
+                "user_id", lastId);
 
-        return jdbcTemplate.query(sql, param,
+        int totalUsers = jdbcTemplate.queryForObject(countSql, param, Integer.class);
+
+        //이게 리스트 만들어주는 건가?
+        List<GetUserResponse> userList = jdbcTemplate.query(sql, param,
                 (rs, rowNum) -> new GetUserResponse(
+                        rs.getString("user_id"),
                         rs.getString("email"),
                         rs.getString("phone_number"),
                         rs.getString("nickname"),
                         rs.getString("profile_image"),
-                        rs.getString("status"))
-        );
+                        rs.getString("status")));
+
+        long newLastId = lastId + userList.size();
+        boolean hasNext = newLastId < totalUsers;
+        return new GetUserResponse2(userList, newLastId, hasNext);
+
     }
 
     public long getUserIdByEmail(String email) {

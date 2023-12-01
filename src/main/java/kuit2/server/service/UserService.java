@@ -26,22 +26,25 @@ public class UserService {
     public PostUserResponse signUp(PostUserRequest postUserRequest) {
         log.info("[UserService.createUser]");
 
-        // TODO: 1. validation (중복 검사)
+        // TODO: 1. validation (이메일, 닉네임 중복 검사)
+        // 이것도 validation인데 controller가 아니라 서비스단에서 해주는 이유는
+        // 이메일, 닉네임은 db 조회가 필요해서 => DB에 접근할 수 있는 계층인 DAO와 인접한 Service에서 해주는 게 더 타당하다.
         validateEmail(postUserRequest.getEmail());
         String nickname = postUserRequest.getNickname();
         if (nickname != null) {
             validateNickname(postUserRequest.getNickname());
         }
 
-        // TODO: 2. password 암호화
+        // TODO: 2. password 암호화 (password는 민감정보라서)
         String encodedPassword = passwordEncoder.encode(postUserRequest.getPassword());
-        postUserRequest.resetPassword(encodedPassword);
+        postUserRequest.resetPassword(encodedPassword); //request에 password 세팅
 
         // TODO: 3. DB insert & userId 반환
         long userId = userDao.createUser(postUserRequest);
 
         // TODO: 4. JWT 토큰 생성
         String jwt = jwtProvider.createToken(postUserRequest.getEmail(), userId);
+        // 여기서 토큰 생성해서 반환해줌
 
         return new PostUserResponse(userId, jwt);
     }
@@ -74,9 +77,9 @@ public class UserService {
         }
     }
 
-    public List<GetUserResponse> getUsers(String nickname, String email, String status) {
+    public GetUserResponse2 getUsers(String nickname, String email, String status, long lastId) {
         log.info("[UserService.getUsers]");
-        return userDao.getUsers(nickname, email, status);
+        return userDao.getUsers(nickname, email, status, lastId);
     }
 
     private void validateEmail(String email) {

@@ -74,14 +74,15 @@ public class UserController {
      * 회원 목록 조회
      */
     @GetMapping("")
-    public BaseResponse<List<GetUserResponse>> getUsers(
+    public BaseResponse<GetUserResponse2> getUsers(
             @RequestParam(required = false, defaultValue = "") String nickname,
             @RequestParam(required = false, defaultValue = "") String email,
-            @RequestParam(required = false, defaultValue = "active") String status) {
+            @RequestParam(required = false, defaultValue = "A") String status,
+            @RequestParam(required = false, defaultValue = "0") long lastId){
         log.info("[UserController.getUsers]");
-        if (!status.equals("active") && !status.equals("dormant") && !status.equals("deleted")) {
+        if (!status.equals("A") && !status.equals("dormant") && !status.equals("deleted")) {
             throw new UserException(INVALID_USER_STATUS);
         }
-        return new BaseResponse<>(userService.getUsers(nickname, email, status));
+        return new BaseResponse<>(userService.getUsers(nickname, email, status, lastId));
     }
 }

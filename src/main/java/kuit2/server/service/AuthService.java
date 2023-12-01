@@ -23,6 +23,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
+    // 로그인 로직
     public LoginResponse login(LoginRequest authRequest) {
         log.info("[AuthService.login]");
 
@@ -31,7 +32,7 @@ public class AuthService {
         // TODO: 1. 이메일 유효성 확인
         long userId;
         try {
-            userId = userDao.getUserIdByEmail(email);
+            userId = userDao.getUserIdByEmail(email); // 앱의 회원인지 확인
         } catch (IncorrectResultSizeDataAccessException e) {
             throw new UserException(EMAIL_NOT_FOUND);
         }
@@ -46,8 +47,9 @@ public class AuthService {
     }
 
     private void validatePassword(String password, long userId) {
+        //DB에는 Password가 암호화돼서 저장되기 때문에 복호화해서 request로 들어온 비밀번호랑 같은지 확인해줘야해
         String encodedPassword = userDao.getPasswordByUserId(userId);
-        if (!passwordEncoder.matches(password, encodedPassword)) {
+        if (!passwordEncoder.matches(password, encodedPassword)) { //passwordEncoder를 통해 복호화
             throw new UserException(PASSWORD_NO_MATCH);
         }
     }

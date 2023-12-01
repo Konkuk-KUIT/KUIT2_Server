@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class GetUserResponse {
 
+    private String userId; // 확인 쉽게 하기 위해
     private String email;
     private String phoneNumber;
     private String nickname;

@@ -37,7 +37,7 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
         String email = jwtProvider.getPrincipal(accessToken);
         validatePayload(email);
 
-        long userId = authService.getUserIdByEmail(email);
+        long userId = authService.getUserIdByEmail(email); // 이 userId를 AuthController에서 재사용하면 좋을 것 같다!
         request.setAttribute("userId", userId);
         return true;
     }
