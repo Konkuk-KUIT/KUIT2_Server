@@ -30,11 +30,14 @@ public class RestaurantDao {
     }
 
     public List<GetStoreResponse> getStoresByCategoryV1(String category, int page, int size) {
-        String sql = "SELECT * FROM Stores WHERE category = :category AND status = 'active' " +
-                "ORDER BY storeId LIMIT :limit OFFSET :offset";
+        String sql = "SELECT * FROM Stores WHERE category = :category " +
+                "ORDER BY storeId";
 
         int limit = size;
-        int offset = page * size;
+        int offset = page * size + 1;
+
+        log.info(String.valueOf(size));
+        log.info(String.valueOf(offset));
 
         Map<String, Object> params = Map.of(
                 "category", category,
@@ -51,7 +54,7 @@ public class RestaurantDao {
 
     public List<GetStoreResponse> getStoresByCategoryV2(String category, Long lastStoreId, int size) {
         String sql = "SELECT * FROM Stores WHERE category = :category AND storeId > :lastStoreId " +
-                "AND status = 'active' ORDER BY storeId LIMIT :limit";
+                "ORDER BY storeId LIMIT :limit";
 
         Map<String, Object> params = Map.of(
                 "category", category,
