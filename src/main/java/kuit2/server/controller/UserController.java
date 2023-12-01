@@ -1,5 +1,6 @@
 package kuit2.server.controller;
 
+import kuit2.server.common.argument_resolver.PreAuthorize;
 import kuit2.server.common.exception.UserException;
 import kuit2.server.common.response.BaseResponse;
 import kuit2.server.dto.user.*;
@@ -40,7 +41,7 @@ public class UserController {
      * 회원 휴면
      */
     @PatchMapping("/{userId}/dormant")
-    public BaseResponse<Object> modifyUserStatus_dormant(@PathVariable long userId) {
+    public BaseResponse<Object> modifyUserStatus_dormant(@PathVariable @PreAuthorize long userId) {
         log.info("[UserController.modifyUserStatus_dormant]");
         userService.modifyUserStatus_dormant(userId);
         return new BaseResponse<>(null);
@@ -50,7 +51,7 @@ public class UserController {
      * 회원 탈퇴
      */
     @PatchMapping("/{userId}/deleted")
-    public BaseResponse<Object> modifyUserStatus_deleted(@PathVariable long userId) {
+    public BaseResponse<Object> modifyUserStatus_deleted(@PathVariable @PreAuthorize long userId) {
         log.info("[UserController.modifyUserStatus_delete]");
         userService.modifyUserStatus_deleted(userId);
         return new BaseResponse<>(null);
@@ -60,7 +61,7 @@ public class UserController {
      * 닉네임 변경
      */
     @PatchMapping("/{userId}/nickname")
-    public BaseResponse<String> modifyNickname(@PathVariable long userId,
+    public BaseResponse<String> modifyNickname(@PathVariable @PreAuthorize long userId,
                                                @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
         log.info("[UserController.modifyNickname]");
         if (bindingResult.hasErrors()) {
@@ -69,6 +70,37 @@ public class UserController {
         userService.modifyNickname(userId, patchNicknameRequest.getNickname());
         return new BaseResponse<>(null);
     }
+
+    /**
+     * 이메일 변경
+     */
+    @PatchMapping("/{userId}/email")
+    public BaseResponse<String> modifyEmail(@PathVariable @PreAuthorize long userId,
+                                            @Validated @RequestBody PatchEmailRequest patchEmailRequest, BindingResult bindingResult) {
+        log.info("[UserController.modifyEmail]");
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+        userService.modifyEmail(userId, patchEmailRequest.getEmail());
+        return new BaseResponse<>(null);
+    }
+
+    /**
+     * 전화번호 변경
+     */
+    @PatchMapping("/{userId}/phone")
+    public BaseResponse<String> modifyPhoneNumber(@PathVariable @PreAuthorize long userId,
+                                                  @Validated @RequestBody PatchPhoneNumberRequest patchPhoneNumberRequest, BindingResult bindingResult) {
+        log.info("[UserController.modifyPhoneNumber]");
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+
+        userService.modifyPhoneNumber(userId, patchPhoneNumberRequest.getPhoneNumber());
+        return new BaseResponse<>(null);
+
+    }
+
 
     /**
      * 회원 목록 조회
@@ -84,4 +116,27 @@ public class UserController {
         }
         return new BaseResponse<>(userService.getUsers(nickname, email, status));
     }
+
+    /**
+     * 회원 ID로 조회
+     */
+    @GetMapping("{userId}")
+    public BaseResponse<GetUserResponse> getUser(@PathVariable long userId) {
+        log.info("[UserController.getUser]");
+        return new BaseResponse<>(userService.getUserById(userId));
+    }
+
+    @GetMapping("/list")
+    public BaseResponse<UserResponsePage> getUsersByPage(
+            @RequestParam(required = false, defaultValue = "active") String status,
+            @RequestParam(defaultValue = "0") Long lastId) {
+        if (!status.equals("active") && !status.equals("dormant") && !status.equals("deleted")) {
+            throw new UserException(INVALID_USER_STATUS);
+        }
+
+        return new BaseResponse<>(userService.getUsersByPage(status, lastId));
+
+    }
+
+
 }
