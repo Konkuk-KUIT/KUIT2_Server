@@ -3,7 +3,7 @@ package kuit2.server.common.exception_handler;
 import jakarta.validation.ConstraintViolationException;
 import kuit2.server.common.exception.BadRequestException;
 import kuit2.server.common.exception.InternalServerErrorException;
-import kuit2.server.common.response.BaseErrorResponse;
+import kuit2.server.common.response.BaseExceptionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
@@ -21,9 +21,9 @@ public class BaseExceptionControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({BadRequestException.class, NoHandlerFoundException.class, TypeMismatchException.class})
-    public BaseErrorResponse handle_BadRequest(Exception e) {
+    public BaseExceptionResponse handle_BadRequest(Exception e) {
         log.error("[handle_BadRequest]", e);
-        return new BaseErrorResponse(URL_NOT_FOUND);
+        return new BaseExceptionResponse(URL_NOT_FOUND);
     }
 
     // 위와 동일 (return ResponseEntity<>)
@@ -37,30 +37,30 @@ public class BaseExceptionControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public BaseErrorResponse handle_HttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+    public BaseExceptionResponse handle_HttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         log.error("[handle_HttpRequestMethodNotSupportedException]", e);
-        return new BaseErrorResponse(METHOD_NOT_ALLOWED);
+        return new BaseExceptionResponse(METHOD_NOT_ALLOWED);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
-    public BaseErrorResponse handle_ConstraintViolationException(ConstraintViolationException e) {
+    public BaseExceptionResponse handle_ConstraintViolationException(ConstraintViolationException e) {
         log.error("[handle_ConstraintViolationException]", e);
-        return new BaseErrorResponse(BAD_REQUEST, e.getMessage());
+        return new BaseExceptionResponse(BAD_REQUEST, e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(InternalServerErrorException.class)
-    public BaseErrorResponse handle_InternalServerError(InternalServerErrorException e) {
+    public BaseExceptionResponse handle_InternalServerError(InternalServerErrorException e) {
         log.error("[handle_InternalServerError]", e);
-        return new BaseErrorResponse(e.getExceptionStatus());
+        return new BaseExceptionResponse(e.getExceptionStatus());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(RuntimeException.class)
-    public BaseErrorResponse handle_RuntimeException(Exception e) {
+    public BaseExceptionResponse handle_RuntimeException(Exception e) {
         log.error("[handle_RuntimeException]", e);
-        return new BaseErrorResponse(SERVER_ERROR);
+        return new BaseExceptionResponse(SERVER_ERROR);
     }
 
 }

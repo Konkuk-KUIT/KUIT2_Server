@@ -1,7 +1,7 @@
 package kuit2.server.dao;
 
-import kuit2.server.dto.user.GetUserResponse;
-import kuit2.server.dto.user.PostUserRequest;
+import kuit2.server.common.response.BaseResponse;
+import kuit2.server.dto.user.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -25,7 +25,7 @@ public class UserDao {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    public boolean hasDuplicateEmail(String email) {
+    public boolean hasDuplicateEmail(String email) { //NamedParameterJdbcTemplate 는 일반 JdbcTemplate 과는 다르게, 파라미터를 ? 대신 :email 처럼 이름을 명시할 수 있어 편리하다.
         String sql = "select exists(select email from user where email=:email and status in ('active', 'dormant'))";
         Map<String, Object> param = Map.of("email", email);
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
@@ -103,4 +103,67 @@ public class UserDao {
         Map<String, Object> param = Map.of("user_id", userId);
         return jdbcTemplate.queryForObject(sql, param, String.class);
     }
+
+    public GetUserResponse getUserByUserId(long userId) {
+        String sql = "select email, phone_number, nickname, profile_image, status from user where user_id=:user_id";
+        Map<String, Object> param = Map.of("user_id", userId);
+        return jdbcTemplate.queryForObject(
+                sql,
+                param,
+                (resultSet, rowNum) -> {
+                    GetUserResponse getUserResponse = new GetUserResponse();
+                    getUserResponse.setEmail(resultSet.getString("email"));
+                    getUserResponse.setNickname(resultSet.getString("nickname"));
+                    getUserResponse.setStatus(resultSet.getString("status"));
+                    getUserResponse.setPhoneNumber(resultSet.getString("phone_number"));
+                    getUserResponse.setProfileImage(resultSet.getString("profile_image"));
+                    return getUserResponse;
+                });
+    }
+
+    public String addFavorite(long userId, long restaurantId) {
+        String sql = "insert into favorite(user_id, restaurant_id, status) values(:user_id, :restaurant_id, :status)";
+        Map<String, Object> param = Map.of(
+                "user_id", userId,
+                "restaurant_id", restaurantId,
+                "status", "active");
+
+        jdbcTemplate.update(sql, param);
+
+        return "ok";
+    }
+
+    public String deleteFavorite(long userId, long restaurantId) {
+        String sql = "delete from favorite where user_id=:userId and restaurant_id=:restaurantId";
+
+        Map<String, Object> param = Map.of(
+                "userId", userId,
+                "restaurantId", restaurantId);
+
+        jdbcTemplate.update(sql, param);
+        return "ok";
+    }
+
+    public GetFavoriteResponse getFavorite(long userId) {
+        String sql = "(select name, min_order_price from restaurant where restaurant_id in (select restaurant_id from favorite where user_id=:userId ))";
+        Map<String, Object> param = Map.of("userId", userId);
+        GetFavoriteResponse getFavoriteResponse = new GetFavoriteResponse();
+        getFavoriteResponse.setRestaurants(jdbcTemplate.query(
+                sql,
+                param,
+                (resultSet, rowNum) -> {
+                    GetBriefRestaurantResponse getBriefRestaurantResponse = new GetBriefRestaurantResponse();
+                    getBriefRestaurantResponse.setRestaurantName(resultSet.getString("name"));
+                    getBriefRestaurantResponse.setStar_count(0);
+                    getBriefRestaurantResponse.setReview_count(0);
+                    getBriefRestaurantResponse.setRepresentMenu(null);
+                    getBriefRestaurantResponse.setEta(null);
+                    getBriefRestaurantResponse.setMinOrderPrice(resultSet.getFloat("min_order_price"));
+
+                    return getBriefRestaurantResponse;
+                }));
+
+        return getFavoriteResponse;
+    }
+
 }

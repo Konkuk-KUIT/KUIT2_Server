@@ -1,5 +1,7 @@
 package kuit2.server.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import kuit2.server.common.argument_resolver.PreAuthorize;
 import kuit2.server.common.exception.UserException;
 import kuit2.server.common.response.BaseResponse;
 import kuit2.server.dto.user.*;
@@ -12,8 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static kuit2.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_STATUS;
-import static kuit2.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_VALUE;
+import static kuit2.server.common.response.status.BaseExceptionResponseStatus.*;
 import static kuit2.server.util.BindingResultUtils.getErrorMessages;
 
 @Slf4j
@@ -37,6 +38,27 @@ public class UserController {
     }
 
     /**
+     * 회원 단건 조회
+     */
+    @GetMapping("/{userId}")
+    public BaseResponse<GetUserResponse> getUserInfo(@PathVariable long userId) {
+        log.info("[UserController.getUserInfo]");
+
+        return new BaseResponse<>(userService.getUserInfo(userId));
+    }
+
+
+    /**
+     * 회원 단건 조회 v2
+     */
+    @GetMapping("/info")
+    public BaseResponse<GetUserResponse> getUserInfoJWT(@PreAuthorize long userId) {
+        log.info("[UserController.getUserInfo]");
+
+        return new BaseResponse<>(userService.getUserInfo(userId));
+    }
+
+    /**
      * 회원 휴면
      */
     @PatchMapping("/{userId}/dormant")
@@ -57,10 +79,24 @@ public class UserController {
     }
 
     /**
-     * 닉네임 변경
+     * 닉네임 변경 v1
      */
     @PatchMapping("/{userId}/nickname")
     public BaseResponse<String> modifyNickname(@PathVariable long userId,
+                                               @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
+        log.info("[UserController.modifyNickname]");
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+        userService.modifyNickname(userId, patchNicknameRequest.getNickname());
+        return new BaseResponse<>(null);
+    }
+
+    /**
+     * 닉네임 변경 v2 usingJWT
+     */
+    @PatchMapping("/nickname")
+    public BaseResponse<String> modifyNicknameJWT(@PreAuthorize long userId,
                                                @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
         log.info("[UserController.modifyNickname]");
         if (bindingResult.hasErrors()) {
@@ -83,5 +119,105 @@ public class UserController {
             throw new UserException(INVALID_USER_STATUS);
         }
         return new BaseResponse<>(userService.getUsers(nickname, email, status));
+    }
+
+    /**
+     * 유저장바구니 조회
+     */
+    @GetMapping("/{userId}/cart")
+    public BaseResponse<List<GetCartResponse>> getCart(@PathVariable long userId) {
+        log.info("[UserController.getCart");
+
+        return new BaseResponse<List<GetCartResponse>>(userService.getCart(userId));
+    }
+
+    /**
+     * 유저장바구니 조회 v2
+     */
+    @GetMapping("/cart")
+    public BaseResponse<List<GetCartResponse>> getCartJWT(@PreAuthorize long userId) {
+        log.info("[UserController.getCart");
+
+        return new BaseResponse<List<GetCartResponse>>(userService.getCart(userId));
+    }
+
+    /**
+     * 회원이 쓴 리뷰 조회
+     */
+    @GetMapping("/{userId}/reviews")
+    public BaseResponse<List<GetReviewResponse>> getReviews(@PathVariable long userId) {
+        log.info("UserController.getReviews");
+
+        return new BaseResponse<List<GetReviewResponse>>(userService.getReviews(userId));
+    }
+
+    /**
+     * 회원이 쓴 리뷰 조회 v2
+     */
+    @GetMapping("/reviews")
+    public BaseResponse<List<GetReviewResponse>> getReviewsJWT(@PreAuthorize long userId) {
+        log.info("UserController.getReviews");
+
+        return new BaseResponse<List<GetReviewResponse>>(userService.getReviews(userId));
+    }
+
+    /**
+     * 찜하기
+     */
+    @PostMapping("/{userId}/favorites")
+    public BaseResponse<Object> addFavorite(@PathVariable long userId, @Validated @RequestBody PostFavoriteRequest postFavoriteRequest, BindingResult bindingResult) {
+        log.info("UserController.addFavorite");
+
+        return new BaseResponse<>(userService.addFavorite(userId, postFavoriteRequest.getRestaurantId()));
+    }
+
+    /**
+     * 찜하기 v2
+     */
+    @PostMapping("/favorites")
+    public BaseResponse<Object> addFavoriteJWT(@PreAuthorize long userId, @Validated @RequestBody PostFavoriteRequest postFavoriteRequest, BindingResult bindingResult) {
+        log.info("UserController.addFavorite");
+
+        return new BaseResponse<>(userService.addFavorite(userId, postFavoriteRequest.getRestaurantId()));
+    }
+
+    /**
+     * 찜 취소
+     */
+    @DeleteMapping("/{userId}/favorites")
+    public BaseResponse<Object> deleteFavorite(@PathVariable long userId, @RequestParam long restaurantId) {
+        log.info("UserController.deleteFavorite");
+
+        return new BaseResponse<>(userService.deleteFavorite(userId, restaurantId));
+    }
+
+    /**
+     * 찜 취소 v2
+     */
+    @DeleteMapping("/favorites")
+    public BaseResponse<Object> deleteFavoriteJWT(@PreAuthorize long userId, @RequestParam long restaurantId) {
+        log.info("UserController.deleteFavorite");
+
+        return new BaseResponse<>(userService.deleteFavorite(userId, restaurantId));
+    }
+
+    /**
+     * 찜 목록 조회
+     */
+    @GetMapping("/{userId}/favorites")
+    public BaseResponse<GetFavoriteResponse> getFavorites(@PathVariable long userId) {
+        log.info("UserController.getFavorites");
+
+        return new BaseResponse<GetFavoriteResponse>(userService.getFavorites(userId));
+    }
+
+    /**
+     * 찜 목록 조회 v2
+     */
+    @GetMapping("/favorites")
+    public BaseResponse<GetFavoriteResponse> getFavoritesJWT(@PreAuthorize long userId) {
+        log.info("UserController.getFavorites");
+
+        return new BaseResponse<GetFavoriteResponse>(userService.getFavorites(userId));
     }
 }
