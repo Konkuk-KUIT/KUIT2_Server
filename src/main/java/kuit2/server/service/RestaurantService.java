@@ -4,6 +4,7 @@ import kuit2.server.common.exception.RestaurantException;
 import kuit2.server.dao.RestaurantDao;
 import kuit2.server.dto.restaurant.GetCategoriesResponse;
 import kuit2.server.dto.restaurant.GetRestaurantMenuResponse;
+import kuit2.server.dto.restaurant.GetMenuResponse;
 import kuit2.server.dto.user.GetBriefRestaurantResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,16 @@ public class RestaurantService {
 
         if(restaurantDao.getBriefRestaurantById(restaurantId) != null){
             return restaurantDao.getRestaurantMenus(restaurantId);
+        }
+
+        throw new RestaurantException(RESTAURANT_NOT_FOUND);
+    }
+
+    public GetMenuResponse getRestaurantMenu(long restaurantId, long menuId) {
+        log.info("[RestaurantService.getRestaurantMenu]");
+
+        if(restaurantDao.getBriefRestaurantById(restaurantId) != null){
+            return restaurantDao.getRestaurantMenu(restaurantId, menuId);
         }
 
         throw new RestaurantException(RESTAURANT_NOT_FOUND);

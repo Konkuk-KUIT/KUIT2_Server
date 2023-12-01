@@ -3,6 +3,7 @@ package kuit2.server.controller;
 import kuit2.server.common.response.BaseResponse;
 import kuit2.server.dto.restaurant.GetCategoriesResponse;
 import kuit2.server.dto.restaurant.GetRestaurantMenuResponse;
+import kuit2.server.dto.restaurant.GetMenuResponse;
 import kuit2.server.dto.user.GetBriefRestaurantResponse;
 import kuit2.server.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
@@ -52,5 +53,15 @@ public class RestaurantController {
         log.info("RestaurantController.getRestaurantMenus");
 
         return new BaseResponse<>(restaurantService.getRestaurantMenus(restaurantId));
+    }
+
+    /**
+     * 음식점 메뉴 단건 조회
+     */
+    @GetMapping("/{restaurantId}/{menuId}")
+    public BaseResponse<GetMenuResponse> getRestaurantMenu(@PathVariable long restaurantId, @PathVariable long menuId) {
+        log.info("RestaurantController.getRestaurantMenu");
+
+        return new BaseResponse<>(restaurantService.getRestaurantMenu(restaurantId, menuId));
     }
 }

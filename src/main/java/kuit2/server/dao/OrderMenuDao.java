@@ -50,7 +50,7 @@ public class OrderMenuDao {
                 MenuOption option = new MenuOption();
                 option.setMenuOptionCategory(rs.getString("option_category_name"));
                 option.setMenuOptionName(rs.getString("option_name"));
-                option.setMenuOptionPrice(rs.getInt("option_price"));
+                option.setMenuOptionPrice(rs.getFloat("option_price"));
 
                 response.setOptions(Arrays.asList(option)); // This is a simplification. You'll need to handle multiple options.
                 return response;

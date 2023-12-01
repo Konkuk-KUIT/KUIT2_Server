@@ -5,14 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MenuOption {
-
-    private String menuOptionCategory;
-    private String menuOptionName;
-    private Float menuOptionPrice;
-
+public class MenuOptionInCategory {
+    private String categoryName;
+    private List<MenuOption> menuOptions;
 }

@@ -4,17 +4,17 @@ import kuit2.server.common.exception.RestaurantException;
 import kuit2.server.dto.restaurant.GetBriefMenuResponse;
 import kuit2.server.dto.restaurant.GetCategoriesResponse;
 import kuit2.server.dto.restaurant.GetRestaurantMenuResponse;
+import kuit2.server.dto.restaurant.GetMenuResponse;
 import kuit2.server.dto.user.GetBriefRestaurantResponse;
+import kuit2.server.dto.user.MenuOption;
+import kuit2.server.dto.user.MenuOptionInCategory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -123,5 +123,53 @@ public class RestaurantDao {
             }
             return new ArrayList<>(responseMap.values());
         });
+    }
+
+    public GetMenuResponse getRestaurantMenu(long restaurantId, long menuId) {
+
+        String sql = "select m.menu_id, m.name, m.description, m.price \n" +
+                "from menu AS m \n" +
+                "where menu_id=:menuId;";
+
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("menuId", menuId);
+
+        GetMenuResponse getMenuResponse = new GetMenuResponse();
+
+        jdbcTemplate.query(sql, parameters, rs -> {
+            getMenuResponse.setMenuId(rs.getLong("menu_id"));
+            getMenuResponse.setMenuName(rs.getString("name"));
+            getMenuResponse.setMenuDescription(rs.getString("description"));
+            getMenuResponse.setMenuPrice(rs.getFloat("price"));
+        });
+
+        String sqlForOption = "select moc.name AS optionCategory, mo.name, mo.price " +
+                "from menu_option_category AS moc join menu_option AS mo on mo.menu_option_id = moc.menu_option_id " +
+                "where mo.menu_id = :menuId;";
+
+        MapSqlParameterSource parametersForOption = new MapSqlParameterSource();
+        parametersForOption.addValue("menuId", menuId);
+
+        Map<String, MenuOptionInCategory> optionCategoryMap = new LinkedHashMap<>();
+
+        getMenuResponse.setOptions(jdbcTemplate.query(sqlForOption, parametersForOption, resultSet -> {
+
+            while (resultSet.next()) {
+                String optionCategory = resultSet.getString("optionCategory");
+                MenuOptionInCategory menuOptionInCategory = optionCategoryMap.computeIfAbsent(
+                        optionCategory, k -> new MenuOptionInCategory(k, new ArrayList<>())
+                );
+
+                MenuOption menuOption = new MenuOption();
+                menuOption.setMenuOptionName(resultSet.getString("mo.name"));
+                menuOption.setMenuOptionPrice(resultSet.getFloat("mo.price"));
+
+                menuOptionInCategory.getMenuOptions().add(menuOption);
+            }
+
+            return new ArrayList<>(optionCategoryMap.values());
+        }));
+
+        return getMenuResponse;
     }
 }
