@@ -65,7 +65,7 @@ public class StoreDao {
                 "where store_name=:storename, status=:status";
 
         Map<String, Object> param = Map.of(
-                "store_name", storename,
+                "storename", storename,
                 "status", status);
 
         return jdbcTemplate.query(sql, param, (rs, rowNum) -> new GetStoreResponse(
@@ -78,11 +78,12 @@ public class StoreDao {
     }
 
 
-    public List<GetStoreResponse> getStoresByPage(long pageNumber) {
+    public List<GetStoreResponse> getStoresByPage(String storename, String status, long page) {
         String sql = "select store_name, running_time, address, profile_image, phone_number, status from Stores" +
-                "where status=:'active' limit 20 offset=:pageNumber";           // 한 페이지에 20개 데이터
+                "where store_name=:storename, status=:status limit 20 offset page:=page";           // 한번에 20개의 데이터 조회
+        // 한 페이지당 20개씩 끊기도록 구현하고 싶었지만 방법을 아직 모르겠습니다.
 
-        Map<String, Object> param = Map.of();
+        Map<String, Object> param = Map.of("storename", storename, "status", status, "page", page-1);
 
         return jdbcTemplate.query(sql, param, (rs, rowNum) -> new GetStoreResponse(
                 rs.getString("store_name"),

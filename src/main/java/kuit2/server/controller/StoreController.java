@@ -95,15 +95,20 @@ public class StoreController {
     }
 
     /**
-     * 가게 목록 조회 -> page별로 구분
+     * 가게 목록 조회
      */
     @GetMapping("/list/{page-number}")
     public BaseResponse<List<GetStoreResponse>> getStoresByPage(
-            @RequestParam(required = false, defaultValue = "") long pageNumber
+            @RequestParam(required = false, defaultValue = "") String storename,
+            @RequestParam(required = false, defaultValue = "active") String status,
+            @RequestParam(required = false, defaultValue = "") long page            // 조회할 storeId
     ){
         log.info("[StoreController.getStoresByPage");
 
-        return new BaseResponse<>(storeService.getStoresByPage(pageNumber));
+        if(!status.equals("active") && !status.equals("inactive")){
+            throw new StoreException(INVALID_STORE_STATUS);
+        }
+        return new BaseResponse<>(storeService.getStoresByPage(storename, status, page));
     }
 
 

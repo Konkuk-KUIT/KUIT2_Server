@@ -76,10 +76,10 @@ public class StoreService {
     }
 
 
-    public List<GetStoreResponse> getStoresByPage(long pageNumber) {
+    public List<GetStoreResponse> getStoresByPage(String storename, String status, long page) {
         log.info("[StoreService.getStoresByPage");
 
-        return storeDao.getStoresByPage(pageNumber);
+        return storeDao.getStoresByPage(storename, status, page);
     }
 }
 
