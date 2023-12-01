@@ -73,17 +73,21 @@ public class UserDao {
         return jdbcTemplate.update(sql, param);
     }
 
-    public List<GetUserResponse> getUsers(String nickname, String email, String status) {
-        String sql = "select email, phone_number, nickname, profile_image, status from user " +
-                "where nickname like :nickname and email like :email and status=:status";
+    public List<GetUserResponse> getUsers(String nickname, String email, String status, long lastId) {
+        String sql = "select user_id, email, phone_number, nickname, profile_image, status from user " +
+                "where user_id > :user_id and nickname like :nickname and email like :email and status=:status "+
+                "limit 10";
 
         Map<String, Object> param = Map.of(
                 "nickname", "%" + nickname + "%",
                 "email", "%" + email + "%",
-                "status", status);
+                "status", status,
+                "user_id", lastId);
 
+        //이게 리스트 만들어주는 건가?
         return jdbcTemplate.query(sql, param,
                 (rs, rowNum) -> new GetUserResponse(
+                        rs.getString("user_id"),
                         rs.getString("email"),
                         rs.getString("phone_number"),
                         rs.getString("nickname"),
