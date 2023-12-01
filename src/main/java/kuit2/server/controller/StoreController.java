@@ -3,6 +3,7 @@ package kuit2.server.controller;
 import kuit2.server.common.exception.StoreException;
 import kuit2.server.common.response.BaseResponse;
 import kuit2.server.dto.store.GetStoreResponse;
+import kuit2.server.dto.store.PatchNameRequest;
 import kuit2.server.dto.store.PostStoreRequest;
 import kuit2.server.dto.store.PostStoreResponse;
 import kuit2.server.service.StoreService;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static kuit2.server.common.response.status.BaseExceptionResponseStatus.INVALID_STORE_STATUS;
-import static kuit2.server.common.response.status.BaseExceptionResponseStatus.INVALID_STORE_VALUE;
+import static kuit2.server.common.response.status.BaseExceptionResponseStatus.*;
+import static kuit2.server.util.BindingResultUtils.getErrorMessages;
 
 @Slf4j
 @RestController
@@ -51,6 +52,20 @@ public class StoreController {
             throw new StoreException(INVALID_STORE_STATUS);
         }
         return new BaseResponse<>(storeService.getStores(category, status));
+    }
+
+    @PatchMapping("/{storeId}/name")
+    public BaseResponse<String> modifyName(
+            @PathVariable long storeId,
+            @Validated @RequestBody PatchNameRequest patchNameRequest,
+            BindingResult bindingResult
+    ) {
+        log.info("[StoreController.modifyName]");
+        if (bindingResult.hasErrors()) {
+            throw new StoreException(INVALID_STORE_VALUE, getErrorMessages(bindingResult));
+        }
+        storeService.modifyName(storeId, patchNameRequest.getName());
+        return new BaseResponse<>(null);
     }
 
 }

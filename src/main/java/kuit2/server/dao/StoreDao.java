@@ -2,8 +2,6 @@ package kuit2.server.dao;
 
 import kuit2.server.dto.store.GetStoreResponse;
 import kuit2.server.dto.store.PostStoreRequest;
-import kuit2.server.dto.user.GetUserResponse;
-import kuit2.server.dto.user.PostUserRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -61,5 +59,16 @@ public class StoreDao {
                         rs.getString("status")
                 )
         );
+    }
+
+    public int modifyName(long storeId, String name) {
+        String sql = "update store set name=:name where store_id=:store_id";
+
+        Map<String, Object> param = Map.of(
+                "name", name,
+                "store_id", storeId
+        );
+
+        return jdbcTemplate.update(sql, param);
     }
 }
