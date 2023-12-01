@@ -22,14 +22,14 @@ public class StoreService {
         log.info("[StoreService.getStoreInfo]");
         return storeDao.getStoreInfo(storeId);
     }
-    public List<GetStoreResponse> searchStore(String storeName){
+    public List<GetStoreResponse> searchStore(String storeName, Integer page, Integer rows){
         log.info("[StoreService.searchStore]");
-        return storeDao.searchStore(storeName);
+        return storeDao.searchStore(storeName, page, rows);
     }
 
-    public List<GetStoreListResponse> getStoreListByClassification(String classification){
+    public List<GetStoreListResponse> getStoreListByClassification(String classification, Integer page, Integer rows){
         log.info("[StoreService.getStoreListByClassification]");
-        return storeDao.getStoreListByClassification(classification);
+        return storeDao.getStoreListByClassification(classification, page, rows);
     }
 
 

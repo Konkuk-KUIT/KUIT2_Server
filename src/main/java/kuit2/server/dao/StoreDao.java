@@ -23,9 +23,9 @@ public class StoreDao {
 
     public List<GetStoreInfoResponse> getStoreInfo(Integer storeId) {
         String sql = "SELECT store_name, load_address, min_order_price, star, food_name" +
-                "FROM Store AS A LEFT OUTER JOIN Menu AS B" +
-                "ON A.store_id = B.store_id" +
-                "WHERE store_id=:store_id;";
+                " FROM Store AS A LEFT OUTER JOIN Menu AS B" +
+                " ON A.store_id = B.store_id" +
+                " WHERE store_id=:store_id;";
         Map<String, Object> param = Map.of(
                 "store_id", storeId);
 
@@ -39,25 +39,28 @@ public class StoreDao {
         );
     }
 
-    public List<GetStoreResponse> searchStore (String storeName) {
-        String sql = "SELECT store_name FROM Store WHERE store_name like :store_name" ;
+    public List<GetStoreResponse> searchStore (String storeName, Integer page, Integer rows) {
+        String sql = "SELECT store_id, store_name FROM Store WHERE store_name like :store_name limit :start,:rows" ;
         Map<String, Object> param = Map.of(
-                "store_name","%" +  storeName + "%");
+                "store_name","%" +  storeName + "%",
+                "start",page,
+                "rows",rows);
 
         return jdbcTemplate.query(sql, param,
                 (rs, rowNum) -> new GetStoreResponse(
                         rs.getInt("store_id"),
                         rs.getString("store_name")
-
                         )
         );
     }
 
 
-    public List<GetStoreListResponse> getStoreListByClassification (String classification) {
-        String sql = "SELECT store_id, store_name FROM Store WHERE classification=:classification" ;
+    public List<GetStoreListResponse> getStoreListByClassification (String classification, Integer page, Integer rows) {
+        String sql = "SELECT store_id, store_name FROM Store WHERE classification=:classification limit :start,:rows" ;
         Map<String, Object> param = Map.of(
-                "classification",classification);
+                "classification",classification,
+                "start", (page-1)*rows,
+                "rows", rows);
 
         return jdbcTemplate.query(sql, param,
                 (rs, rowNum) -> new GetStoreListResponse(

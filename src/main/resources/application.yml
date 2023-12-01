@@ -13,9 +13,9 @@ spring:
       on-profile: "localDB"
 
   datasource:
-    url: jdbc:mysql://localhost:3306/kuit
-    username: root
-    password: dain1107
+    url: ${DATASOURCE_URL_LOCAL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
     dbcp2:
       validation-query: select 1
@@ -31,9 +31,9 @@ spring:
       on-profile: "devDB"
 
   datasource:
-    url: jdbc:mysql://localhost:3306/kuit
-    username: root
-    password: dain1107
+    url: ${DATASOURCE_URL_DEV}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
     dbcp2:
       validation-query: select 1
@@ -49,9 +49,9 @@ spring:
       on-profile: "prodDB"
 
   datasource:
-    url: jdbc:mysql://localhost:3306/kuit
-    username: root
-    password: dain1107
+    url: ${DATASOURCE_URL_PROD}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
     dbcp2:
       validation-query: select 1
@@ -86,11 +86,9 @@ spring:
     activate:
       on-profile: "secret"
 
-
 secret:
-  jwt-secret-key: SSDFJkjl=234jlKDSSOIFdnsf
-  jwt-expired-in: 40000
-
+  jwt-secret-key: ${JWT_SECRET_KEY}
+  jwt-expired-in: ${JWT_EXPIRED_IN}
 
 ---
 

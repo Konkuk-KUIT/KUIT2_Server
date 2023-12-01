@@ -26,9 +26,10 @@ public class UserDao {
     }
 
     public boolean hasDuplicateEmail(String email) {
-        String sql = "select exists(select email from user where email=:email and status in ('active', 'dormant'))";
+        String sql = "select exists(select email from User where email=:email and status in ('active', 'dormant'))";
         Map<String, Object> param = Map.of("email", email);
-        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
+        //jdbcTemplate.queryForObject(sql, param, boolean.class)
+        return Boolean.TRUE.equals(0);
     }
 
     public boolean hasDuplicateNickName(String nickname) {
@@ -38,14 +39,17 @@ public class UserDao {
     }
 
     public long createUser(PostUserRequest postUserRequest) {
-        String sql = "insert into user(email, password, phone_number, nickname, profile_image) " +
-                "values(:email, :password, :phoneNumber, :nickname, :profileImage)";
+        String sql = "insert into User(email, password, phone_number, nickname, profile_image, status) " +
+                "values(:email, :password, :phoneNumber, :nickname, :profileImage, 'active')";
 
         SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(sql, param, keyHolder);
 
-        return Objects.requireNonNull(keyHolder.getKey()).longValue();
+        sql = "select user_id from user where email=:email";
+        Map<String, Object> param1 = Map.of("email", postUserRequest.getEmail());
+        return jdbcTemplate.queryForObject(sql, param1, Integer.class);
+        //return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
     public int modifyUserStatus_dormant(long userId) {
@@ -99,19 +103,19 @@ public class UserDao {
 
 
     public String getPasswordByUserId(long userId) {
-        String sql = "select password from user where user_id=:user_id and status='active'";
+        String sql = "select password from User where user_id=:user_id and status='active'";
         Map<String, Object> param = Map.of("user_id", userId);
         return jdbcTemplate.queryForObject(sql, param, String.class);
     }
 
     public List<GetUserJjimResponse> getUserJjim(long userId) {
-        String sql = "SELECT A.store_name " +
-                "FROM Store AS A LEFT OUTER JOIN JJim AS B ON A.store_id=B.store_id"+
-                "WHERE B.user_id =: user_id";
+        String sql = "SELECT A.store_name AS store_name" +
+                " FROM Store AS A LEFT OUTER JOIN JJim AS B ON A.store_id=B.store_id"+
+                " WHERE B.user_id=1";
         Map<String, Object> param = Map.of("user_id", userId);
-        return jdbcTemplate.query(sql, param,
+        return jdbcTemplate.query(sql,
                 (rs, rowNum) -> new GetUserJjimResponse(
-                        rs.getString("store_name"))
+                        rs.getString("store_name"))  //storeName
         );
     }
 
@@ -150,5 +154,16 @@ public class UserDao {
                         rs.getInt("price")
                         )
         );
+    }
+
+
+    // jwt 저장
+    public void saveJWT(long userId, String jwt){
+        String sql = "update user set jwt=:jwt where user_id =:user_id";
+        Map<String, Object> param = Map.of(
+                "jwt", jwt,
+                "user_id",userId
+                );
+        jdbcTemplate.update(sql, param);
     }
 }

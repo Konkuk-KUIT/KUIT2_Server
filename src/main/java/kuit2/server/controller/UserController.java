@@ -1,5 +1,6 @@
 package kuit2.server.controller;
 
+import kuit2.server.common.argument_resolver.PreAuthorize;
 import kuit2.server.common.exception.UserException;
 import kuit2.server.common.response.BaseResponse;
 import kuit2.server.dto.store.GetUserOrderListResponse;
@@ -70,6 +71,7 @@ public class UserController {
 //        userService.modifyNickname(userId, patchNicknameRequest.getNickname());
 //        return new BaseResponse<>(null);
 //    }
+
     @PatchMapping("/modify")
     public BaseResponse<String> modifyNickname(@PathVariable long userId,
                                                @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
@@ -98,8 +100,9 @@ public class UserController {
 
     //찜리스트보기
     @GetMapping("/jjim")
-    public BaseResponse<List<GetUserJjimResponse>> getUserJjim(@PathVariable long userId){
+    public BaseResponse<List<GetUserJjimResponse>> getUserJjim(@RequestParam(name="user_id") long userId){
         log.info("[UserController.getUserJjim]");
+
         return new BaseResponse<>(userService.getUserJjim(userId));
     }
 

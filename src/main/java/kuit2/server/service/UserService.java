@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import static kuit2.server.common.response.status.BaseExceptionResponseStatus.*;
 
@@ -33,7 +34,6 @@ public class UserService {
         if (nickname != null) {
             validateNickname(postUserRequest.getNickname());
         }
-
         // TODO: 2. password 암호화
         String encodedPassword = passwordEncoder.encode(postUserRequest.getPassword());
         postUserRequest.resetPassword(encodedPassword);
@@ -43,6 +43,9 @@ public class UserService {
 
         // TODO: 4. JWT 토큰 생성
         String jwt = jwtProvider.createToken(postUserRequest.getEmail(), userId);
+
+        // 5. jwt 토큰 저장
+        userDao.saveJWT(userId, jwt);
 
         return new PostUserResponse(userId, jwt);
     }

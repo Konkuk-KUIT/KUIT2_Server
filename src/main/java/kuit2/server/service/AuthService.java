@@ -37,16 +37,19 @@ public class AuthService {
         }
 
         // TODO: 2. 비밀번호 일치 확인
+        log.info(authRequest.getPassword());
+        log.info(String.valueOf(userId));
         validatePassword(authRequest.getPassword(), userId);
 
         // TODO: 3. JWT 갱신
         String updatedJwt = jwtProvider.createToken(email, userId);
-
+        log.info("udatejwt:  "+updatedJwt);
         return new LoginResponse(userId, updatedJwt);
     }
 
     private void validatePassword(String password, long userId) {
         String encodedPassword = userDao.getPasswordByUserId(userId);
+        log.info(encodedPassword);
         if (!passwordEncoder.matches(password, encodedPassword)) {
             throw new UserException(PASSWORD_NO_MATCH);
         }
