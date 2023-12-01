@@ -46,6 +46,7 @@ public class StoreController {
             @RequestParam(required = false, defaultValue = "") String category,
             @RequestParam(required = false, defaultValue = "0") String minDeliveryPrice,
             @RequestParam(required = false, defaultValue = "active") String status
+            @RequestParam(required = false, defaultValue = "0") int pageNo
     ) {
         log.info("[StoreController.getStores]");
         if(!status.equals("active")&&!status.equals("dormant")&&!status.equals("deleted")){
