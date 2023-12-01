@@ -7,10 +7,7 @@ import kuit2.server.dto.user.GetStoreResponse;
 import kuit2.server.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,17 +27,17 @@ public class RestaurantController {
 
     @GetMapping("/categories/{categoryId}")
     public BaseResponse<List<GetStoreResponse>> getStoresByCategoryV1(
-            @RequestParam(required = false, defaultValue = "") String category,
+            @PathVariable(required = false) String categoryId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
         log.info("[RestaurantController.getStoresByCategory]");
 
-        return new BaseResponse<>(restaurantService.getStoresByCategoryV1(category, page, size));
+        return new BaseResponse<>(restaurantService.getStoresByCategoryV1(categoryId, page, size));
     }
 
     //@GetMapping("/categories/{categoryId}")
     public BaseResponse<List<GetStoreResponse>> getStoresByCategoryV2(
-            @RequestParam(required = false, defaultValue = "") String category,
+            @PathVariable(required = false) String category,
             @RequestParam(required = false, defaultValue = "0") Long lastStoreId,
             @RequestParam(defaultValue = "5") int size) {
         log.info("[RestaurantController.getStoresByCategory]");

@@ -31,7 +31,7 @@ public class RestaurantDao {
 
     public List<GetStoreResponse> getStoresByCategoryV1(String category, int page, int size) {
         String sql = "SELECT * FROM Stores WHERE category = :category " +
-                "ORDER BY storeId";
+                "ORDER BY storeId LIMIT :limit";
 
         int limit = size;
         int offset = page * size + 1;
@@ -48,7 +48,7 @@ public class RestaurantDao {
         return jdbcTemplate.query(sql, params, (rs, rowNum) -> new GetStoreResponse(
                 rs.getLong("storeId"),
                 rs.getString("storeName"),
-                rs.getString("storeImage")
+                rs.getString("storePictureUrl")
         ));
     }
 
