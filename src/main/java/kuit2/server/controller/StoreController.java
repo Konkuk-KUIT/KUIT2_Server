@@ -30,7 +30,10 @@ public class StoreController {
     * 가게 생성
     */
     @PostMapping("")
-    BaseResponse<PostStoreResponse> createStore(@Validated @RequestBody PostStoreRequest postStoreRequest, BindingResult bindingResult) {
+    BaseResponse<PostStoreResponse> createStore(
+            @Validated @RequestBody PostStoreRequest postStoreRequest,
+            BindingResult bindingResult
+    ) {
         log.info("[StoreController.createStore]");
         if(bindingResult.hasErrors()) {
             throw new StoreException(INVALID_STORE_VALUE);
@@ -45,14 +48,14 @@ public class StoreController {
     public BaseResponse<List<GetStoreResponse>> getStores(
             @RequestParam(required = false, defaultValue = "") String category,
             @RequestParam(required = false, defaultValue = "0") String minDeliveryPrice,
-            @RequestParam(required = false, defaultValue = "active") String status
+            @RequestParam(required = false, defaultValue = "active") String status,
             @RequestParam(required = false, defaultValue = "0") int pageNo
     ) {
         log.info("[StoreController.getStores]");
         if(!status.equals("active")&&!status.equals("dormant")&&!status.equals("deleted")){
             throw new StoreException(INVALID_STORE_STATUS);
         }
-        return new BaseResponse<>(storeService.getStores(category, status));
+        return new BaseResponse<>(storeService.getStores(category, status, pageNo));
     }
 
     @PatchMapping("/{storeId}/name")

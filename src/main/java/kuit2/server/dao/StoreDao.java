@@ -41,13 +41,20 @@ public class StoreDao {
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
-    public List<GetStoreResponse> getStores(String category, String status) {
+    public List<GetStoreResponse> getStores(String category, String status, int pageNo) {
+
+        int limit = 1;
+        int offset = limit*(pageNo-1);
+
         String sql = "select name, category, address, phone, min_delivery_price, status from store " +
-                "where category like :category and status=:status";
+                "where category like :category and status=:status " +
+                "limit :limit offset :offset";
 
         Map<String, Object> param = Map.of(
                 "category", "%" + category + "%",
-                "status", status);
+                "status", status,
+                "limit", limit,
+                "offset", offset);
 
         return jdbcTemplate.query(sql, param,
                 (rs, rowNum) -> new GetStoreResponse(

@@ -72,14 +72,21 @@ public class UserDao {
         return jdbcTemplate.update(sql, param);
     }
 
-    public List<GetUserResponse> getUsers(String nickname, String email, String status) {
+    public List<GetUserResponse> getUsers(String nickname, String email, String status, int pageNo) {
+
+        int limit = 1;
+        int offset = limit*(pageNo-1);
+
         String sql = "select email, phone_number, nickname, profile_image, status from user " +
-                "where nickname like :nickname and email like :email and status=:status";
+                "where nickname like :nickname and email like :email and status=:status " +
+                "limit :limit offset :offset";
 
         Map<String, Object> param = Map.of(
                 "nickname", "%" + nickname + "%",
                 "email", "%" + email + "%",
-                "status", status);
+                "status", status,
+                "limit", limit,
+                "offset", offset);
 
         return jdbcTemplate.query(sql, param,
                 (rs, rowNum) -> new GetUserResponse(

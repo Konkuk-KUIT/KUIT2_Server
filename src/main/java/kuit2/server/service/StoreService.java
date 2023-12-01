@@ -32,9 +32,9 @@ public class StoreService {
         return new PostStoreResponse(storeId);
     }
 
-    public List<GetStoreResponse> getStores(String category, String status) {
+    public List<GetStoreResponse> getStores(String category, String status, int pageNo) {
         log.info("[StoreService.getStores]");
-        return storeDao.getStores(category, status);
+        return storeDao.getStores(category, status, pageNo);
     }
 
     public void modifyName(long storeId, String name) {
