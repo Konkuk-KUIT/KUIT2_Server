@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import static kuit2.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_VALUE;
 
 @Slf4j
-@Priority(0)
+@Priority(0)                // BaseExceptionControllerAdvice보다 우선순위 높음
 @RestControllerAdvice
 public class UserExceptionControllerAdvice {
 
