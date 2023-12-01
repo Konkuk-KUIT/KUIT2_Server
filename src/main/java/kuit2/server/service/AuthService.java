@@ -6,6 +6,7 @@ import kuit2.server.dao.UserDao;
 import kuit2.server.dto.auth.LoginRequest;
 import kuit2.server.dto.auth.LoginResponse;
 import kuit2.server.util.jwt.JwtProvider;
+import kuit2.server.util.jwt.Token;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -40,9 +41,9 @@ public class AuthService {
         validatePassword(authRequest.getPassword(), userId);
 
         // TODO: 3. JWT 갱신
-        String updatedJwt = jwtProvider.createToken(email, userId);
+        Token updatedJwt = jwtProvider.createToken(email, userId);     //jwt 토큰 발급
 
-        return new LoginResponse(userId, updatedJwt);
+        return new LoginResponse(userId, updatedJwt.getAccessToken(), updatedJwt.getRefreshToken());
     }
 
     private void validatePassword(String password, long userId) {

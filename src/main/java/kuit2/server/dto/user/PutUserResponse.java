@@ -5,9 +5,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PostUserResponse {
+public class PutUserResponse {
 
     private long userId;
     private String accessToken;
-    private String refreshToken;
 }

@@ -9,10 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetUserResponse {
+public class GetStoreResponse {
+    private long storeId;
 
-    private String email;
-    private String phone;
-    private String userName;
-    private String status;
+    private String storeName;
+
+    private String storeImage;
 }

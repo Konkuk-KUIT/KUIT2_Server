@@ -8,5 +8,6 @@ import lombok.Getter;
 public class PostLoginResponse {
 
     private long userId;
-    private String jwt;
+    private String accessToken;
+    private String refreshToken;
 }
