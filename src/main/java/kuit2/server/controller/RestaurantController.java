@@ -4,6 +4,7 @@ import kuit2.server.common.response.BaseResponse;
 import kuit2.server.dto.restaurant.GetCategoriesResponse;
 import kuit2.server.dto.restaurant.GetRestaurantMenuResponse;
 import kuit2.server.dto.restaurant.GetMenuResponse;
+import kuit2.server.dto.restaurant.GetRestaurantResponse;
 import kuit2.server.dto.user.GetBriefRestaurantResponse;
 import kuit2.server.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class RestaurantController {
      * 음식점 목록 조회
      */
     @GetMapping("/{categoryId}")
-    public BaseResponse<List<GetBriefRestaurantResponse>> getRestaurants(
+    public BaseResponse<GetRestaurantResponse> getRestaurants(
             @PathVariable long categoryId,
             @RequestParam(name = "lastId", required = false, defaultValue = "0") long lastId,
             @RequestParam(name = "sort-by", required = false) String sortBy,

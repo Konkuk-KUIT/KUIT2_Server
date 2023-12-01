@@ -50,7 +50,9 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     /**
      * 6000: Restaurant 예외
      */
-    RESTAURANT_NOT_FOUND(6000, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 식당입니다.");
+    RESTAURANT_NOT_FOUND(6000, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 식당입니다."),
+
+    NO_MORE_RESTAURANT_TO_READ(6001, HttpStatus.BAD_REQUEST.value(), "식당 데이터를 모두 읽었습니다." );
 
     private final int code;
     private final int status;

@@ -1,10 +1,7 @@
 package kuit2.server.dao;
 
 import kuit2.server.common.exception.RestaurantException;
-import kuit2.server.dto.restaurant.GetBriefMenuResponse;
-import kuit2.server.dto.restaurant.GetCategoriesResponse;
-import kuit2.server.dto.restaurant.GetRestaurantMenuResponse;
-import kuit2.server.dto.restaurant.GetMenuResponse;
+import kuit2.server.dto.restaurant.*;
 import kuit2.server.dto.user.GetBriefRestaurantResponse;
 import kuit2.server.dto.user.MenuOption;
 import kuit2.server.dto.user.MenuOptionInCategory;
@@ -20,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static kuit2.server.common.response.status.BaseExceptionResponseStatus.NO_MORE_RESTAURANT_TO_READ;
 import static kuit2.server.common.response.status.BaseExceptionResponseStatus.RESTAURANT_NOT_FOUND;
 
 @Slf4j
@@ -69,10 +67,14 @@ public class RestaurantDao {
         return getCategoriesResponse;
     }
 
-    public List<GetBriefRestaurantResponse> getRestaurants(long lastId, long categoryId, String sortBy, String minOrderPrice) {
-        String sql = "select r.restaurant_id, r.name, r.min_order_price from restaurant As r join restaurant_category rc on r.restaurant_id = rc.restaurant_id where rc.category_id=:categoryId and r.min_order_price > :minOrderPrice limit 30 offset :lastId;";
+    public GetRestaurantResponse getRestaurants(long lastId, long categoryId, String sortBy, String minOrderPrice) {
+
+        GetRestaurantResponse getRestaurantResponse = new GetRestaurantResponse();
+
+        String sql = "select r.restaurant_id, r.name, r.min_order_price from restaurant As r join restaurant_category rc on r.restaurant_id = rc.restaurant_id where rc.category_id=:categoryId and r.min_order_price > :minOrderPrice limit 1 offset :lastId;";
         Map<String, Object> param = Map.of("categoryId", categoryId, "minOrderPrice", minOrderPrice, "lastId", lastId);
-        return jdbcTemplate.query(
+
+        List<GetBriefRestaurantResponse> restaurants = jdbcTemplate.query(
                 sql,
                 param,
                 (resultSet, rowNum) -> {
@@ -86,8 +88,27 @@ public class RestaurantDao {
                     getBriefRestaurantResponse.setMinOrderPrice(resultSet.getFloat("min_order_price"));
 
                     return getBriefRestaurantResponse;
-        });
+                });
 
+        long lastRestaurantId = restaurants.isEmpty() ? lastId : restaurants.get(restaurants.size() - 1).getRestaurantId();
+
+        boolean hasNext = hasNext(lastRestaurantId);
+
+
+        getRestaurantResponse.setHasNext(hasNext);
+        getRestaurantResponse.setRestaurants(restaurants);
+
+
+        return getRestaurantResponse;
+    }
+
+    public boolean hasNext(long lastId) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM restaurant WHERE restaurant_id > :lastId LIMIT 1)";
+
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("lastId", lastId + 1);
+
+        return jdbcTemplate.queryForObject(sql, parameters, Boolean.class);
     }
 
     public List<GetRestaurantMenuResponse> getRestaurantMenus(long restaurantId) {

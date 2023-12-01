@@ -5,6 +5,7 @@ import kuit2.server.dao.RestaurantDao;
 import kuit2.server.dto.restaurant.GetCategoriesResponse;
 import kuit2.server.dto.restaurant.GetRestaurantMenuResponse;
 import kuit2.server.dto.restaurant.GetMenuResponse;
+import kuit2.server.dto.restaurant.GetRestaurantResponse;
 import kuit2.server.dto.user.GetBriefRestaurantResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,7 @@ public class RestaurantService {
         return restaurantDao.getCategories();
     }
 
-    public List<GetBriefRestaurantResponse> getRestaurants(long lastId, long categoryId, String sortBy, String minOrderPrice) {
+    public GetRestaurantResponse getRestaurants(long lastId, long categoryId, String sortBy, String minOrderPrice) {
         log.info("[RestaurantService.getRestaurants]");
 
         return restaurantDao.getRestaurants(lastId, categoryId, sortBy, minOrderPrice);
