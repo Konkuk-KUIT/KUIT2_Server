@@ -27,7 +27,7 @@ public class UserController {
     /**
      * 회원 가입
      */
-    @PostMapping("")
+    @PostMapping("/signup")
     public BaseResponse<PostUserResponse> signUp(@Validated @RequestBody PostUserRequest postUserRequest, BindingResult bindingResult) {
         log.info("[UserController.signUp]");
         if (bindingResult.hasErrors()) {
@@ -59,15 +59,27 @@ public class UserController {
     /**
      * 닉네임 변경
      */
-    @PatchMapping("/{userId}/nickname")
+    @PatchMapping("/{userId}/userName")
     public BaseResponse<String> modifyNickname(@PathVariable long userId,
                                                @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
         log.info("[UserController.modifyNickname]");
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
-        userService.modifyNickname(userId, patchNicknameRequest.getNickname());
+        userService.modifyNickname(userId, patchNicknameRequest.getUserName());
         return new BaseResponse<>(null);
+    }
+
+    /**
+     * 회원 정보 변경
+     */
+    @PutMapping("/{userId}")
+    public BaseResponse<PutUserResponse> modifyUser(@PathVariable long userId, @RequestBody PutUserRequest putUserRequest, BindingResult bindingResult) {
+        log.info("[UserController.modifyUser]");
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+        return new BaseResponse<>(userService.modifyUser(userId, putUserRequest));
     }
 
     /**

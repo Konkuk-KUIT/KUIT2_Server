@@ -9,10 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetUserResponse {
-
-    private String email;
-    private String phone;
-    private String userName;
-    private String status;
+public class GetCategoryResponse {
+    private String category;
 }

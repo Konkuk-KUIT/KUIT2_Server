@@ -87,8 +87,10 @@ spring:
       on-profile: "secret"
 
 secret:
-  jwt-secret-key: ${JWT_SECRET_KEY}
+  access-secret-key: ${JWT_SECRET_KEY}
+  refresh-secret-key: ${JWT_SECRET_KEY_REFRESH}
   jwt-expired-in: ${JWT_EXPIRED_IN}
+  refresh-expired-in: ${REFRESH_EXPIRED_IN}
 
 ---
 
