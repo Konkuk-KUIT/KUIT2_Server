@@ -2,11 +2,13 @@ package kuit2.server.service;
 
 import kuit2.server.common.exception.DatabaseException;
 import kuit2.server.common.exception.UserException;
+import kuit2.server.common.exception.jwt.unauthorized.JwtUnauthorizedTokenException;
 import kuit2.server.dao.UserDao;
 import kuit2.server.dto.user.*;
 import kuit2.server.util.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,7 @@ public class UserService {
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+    public static final String[] GRADES = {"고마운분", "귀한분", "더귀한분", "천생연분"};
 
     public PostUserResponse signUp(PostUserRequest postUserRequest) {
         log.info("[UserService.createUser]");
@@ -55,6 +58,8 @@ public class UserService {
         }
     }
 
+
+
     public void modifyUserStatus_deleted(long userId) {
         log.info("[UserService.modifyUserStatus_deleted]");
 
@@ -79,6 +84,12 @@ public class UserService {
         return userDao.getUsers(nickname, email, status);
     }
 
+    public String getEmailByUserId(long userId){
+        log.info("[UserService.getEmail]");
+        return userDao.getEmailByUserId(userId);
+
+    }
+
     private void validateEmail(String email) {
         if (userDao.hasDuplicateEmail(email)) {
             throw new UserException(DUPLICATE_EMAIL);
@@ -90,4 +101,32 @@ public class UserService {
             throw new UserException(DUPLICATE_NICKNAME);
         }
     }
+
+    public long getUserIdByEmail(String email) {
+            return userDao.getUserIdByEmail(email);
+    }
+
+
+    public String getUserGrade(long userId){
+        log.info("[UserService.getUserId]");
+        return userDao.getGradeByUserId(userId);
+    }
+
+    public String updateGrade(long userId){
+        log.info("[UserService.getUserId]");
+        return userDao.increaseGrade(userId);
+    }
+
+    public int getUserOrderCount(long userId){
+        log.info("[UserService.getUserId]");
+        return userDao.getOrderCountByUserId(userId);
+    }
+    public int increaseUserOrderCount(long userId) {
+        log.info("[UserService.getUserId]");
+
+        return userDao.increaseOrderCount(userId);
+    }
+
+
+
 }

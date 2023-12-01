@@ -26,6 +26,7 @@ public class AuthController {
     /**
      * 로그인
      */
+
     @PostMapping("/login")
     public BaseResponse<LoginResponse> login(@Validated @RequestBody LoginRequest authRequest, BindingResult bindingResult) {
         log.info("[AuthController.login]");
@@ -34,6 +35,7 @@ public class AuthController {
         }
         return new BaseResponse<>(authService.login(authRequest));
     }
+
 
     /**
      * 인가(JWT 검증) 테스트
