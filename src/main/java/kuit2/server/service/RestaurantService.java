@@ -32,7 +32,7 @@ public class RestaurantService {
     public GetRestaurantResponse getRestaurants(long lastId, long categoryId, String sortBy, String minOrderPrice) {
         log.info("[RestaurantService.getRestaurants]");
 
-        return restaurantDao.getRestaurants(lastId, categoryId, sortBy, minOrderPrice);
+        return restaurantDao.getRestaurantsV2(lastId, categoryId, sortBy, minOrderPrice);
     }
 
     public List<GetRestaurantMenuResponse> getRestaurantMenus(long restaurantId) {

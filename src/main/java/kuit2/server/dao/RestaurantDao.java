@@ -5,6 +5,10 @@ import kuit2.server.dto.restaurant.*;
 import kuit2.server.dto.user.GetBriefRestaurantResponse;
 import kuit2.server.dto.user.MenuOption;
 import kuit2.server.dto.user.MenuOptionInCategory;
+import kuit2.server.util.PagingStrategy;
+import kuit2.server.util.PagingStrategyFactory;
+import kuit2.server.util.SortStrategy;
+import kuit2.server.util.SortStrategyFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -17,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static kuit2.server.common.response.status.BaseExceptionResponseStatus.NO_MORE_RESTAURANT_TO_READ;
 import static kuit2.server.common.response.status.BaseExceptionResponseStatus.RESTAURANT_NOT_FOUND;
 
 @Slf4j
@@ -111,6 +114,32 @@ public class RestaurantDao {
 
         return jdbcTemplate.queryForObject(sql, parameters, Boolean.class);
     }
+
+    /**
+     * 팩토리 메서드 패턴을 이용해 정렬 기준에따라 다른 로직을 수행하는 Controller
+     */
+    public GetRestaurantResponse getRestaurantsV2(long lastId, long categoryId, String sortBy, String minOrderPrice) {
+        GetRestaurantResponse getRestaurantResponse = new GetRestaurantResponse();
+
+        SortStrategy sortStrategy = SortStrategyFactory.getSortStrategy(sortBy, jdbcTemplate);
+        List<GetBriefRestaurantResponse> restaurants = sortStrategy.sort(lastId, categoryId, minOrderPrice);
+
+
+        long lastRestaurantId = restaurants.isEmpty() ? lastId : restaurants.get(restaurants.size() - 1).getRestaurantId();
+
+
+        PagingStrategy pagingStrategy = PagingStrategyFactory.getPagingStrategy(sortBy, jdbcTemplate);
+        boolean hasNext = pagingStrategy.hasNext(lastRestaurantId, categoryId);
+
+
+        getRestaurantResponse.setHasNext(hasNext);
+        getRestaurantResponse.setRestaurants(restaurants);
+
+
+        return getRestaurantResponse;
+    }
+
+
 
     public List<GetRestaurantMenuResponse> getRestaurantMenus(long restaurantId) {
         String sql = "SELECT m.menu_id, m.name AS menu_name, m.description AS menu_description, m.price, cm.name AS category " +
