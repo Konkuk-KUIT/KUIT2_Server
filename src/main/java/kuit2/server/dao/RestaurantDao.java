@@ -29,12 +29,36 @@ public class RestaurantDao {
         );
     }
 
-    public List<GetStoreResponse> getStoresByCategory(String category) {
-        String sql = "select * from Stores where category = :category and status = 'active'";
+    public List<GetStoreResponse> getStoresByCategoryV1(String category, int page, int size) {
+        String sql = "SELECT * FROM Stores WHERE category = :category AND status = 'active' " +
+                "ORDER BY storeId LIMIT :limit OFFSET :offset";
 
-        Map<String, Object> params = Map.of("category", category);
+        int limit = size;
+        int offset = page * size;
 
-        // 쿼리 실행 및 결과 매핑
+        Map<String, Object> params = Map.of(
+                "category", category,
+                "limit", limit,
+                "offset", offset
+        );
+
+        return jdbcTemplate.query(sql, params, (rs, rowNum) -> new GetStoreResponse(
+                rs.getLong("storeId"),
+                rs.getString("storeName"),
+                rs.getString("storeImage")
+        ));
+    }
+
+    public List<GetStoreResponse> getStoresByCategoryV2(String category, Long lastStoreId, int size) {
+        String sql = "SELECT * FROM Stores WHERE category = :category AND storeId > :lastStoreId " +
+                "AND status = 'active' ORDER BY storeId LIMIT :limit";
+
+        Map<String, Object> params = Map.of(
+                "category", category,
+                "lastStoreId", lastStoreId,
+                "limit", size
+        );
+
         return jdbcTemplate.query(sql, params, (rs, rowNum) -> new GetStoreResponse(
                 rs.getLong("storeId"),
                 rs.getString("storeName"),

@@ -59,14 +59,14 @@ public class UserController {
     /**
      * 닉네임 변경
      */
-    @PatchMapping("/{userId}/nickname")
+    @PatchMapping("/{userId}/userName")
     public BaseResponse<String> modifyNickname(@PathVariable long userId,
                                                @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
         log.info("[UserController.modifyNickname]");
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
-        userService.modifyNickname(userId, patchNicknameRequest.getNickname());
+        userService.modifyNickname(userId, patchNicknameRequest.getUserName());
         return new BaseResponse<>(null);
     }
 

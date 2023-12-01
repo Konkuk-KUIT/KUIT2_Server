@@ -8,5 +8,5 @@ import lombok.Getter;
 public class PutUserResponse {
 
     private long userId;
-    private String jwt;
+    private String accessToken;
 }

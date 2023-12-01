@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 public class GetStoreDetailResponse {
     private String storeName;
 
-    private String storeImage;
+    private String storePictureUrl;
 
     private String address;
 
@@ -22,7 +22,7 @@ public class GetStoreDetailResponse {
 
     private String closedDays;
 
-    private int numOfLike;
+    private int likes;
 
     private int type;
 

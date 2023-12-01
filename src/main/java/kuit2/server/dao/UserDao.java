@@ -5,7 +5,6 @@ import kuit2.server.dto.user.PostUserRequest;
 import kuit2.server.dto.user.PutUserRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -33,15 +32,15 @@ public class UserDao {
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
 
-    public boolean hasDuplicateNickName(String nickname) {
-        String sql = "select exists(select email from users where nickname=:nickname and status in ('active', 'dormant'))";
-        Map<String, Object> param = Map.of("nickname", nickname);
+    public boolean hasDuplicateUserName(String userName) {
+        String sql = "select exists(select email from users where userName=:userName and status in ('active', 'dormant'))";
+        Map<String, Object> param = Map.of("userName", userName);
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
 
     public long createUser(PostUserRequest postUserRequest) {
-        String sql = "insert into users(email, password, phone_number, nickname, profile_image) " +
-                "values(:email, :password, :phoneNumber, :nickname, :profileImage)";
+        String sql = "insert into users(email, password, phone, userName) " +
+                "values(:email, :password, :phone, :userName)";
 
         SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -51,75 +50,86 @@ public class UserDao {
     }
 
     public int modifyUserStatus_dormant(long userId) {
-        String sql = "update users set status=:status where user_id=:user_id";
+        String sql = "update users set status=:status where userId=:userId";
         Map<String, Object> param = Map.of(
                 "status", "dormant",
-                "user_id", userId);
+                "userId", userId);
         return jdbcTemplate.update(sql, param);
     }
 
     public int modifyUserStatus_deleted(long userId) {
-        String sql = "update users set status=:status where user_id=:user_id";
+        String sql = "update users set status=:status where userId=:userId";
         Map<String, Object> param = Map.of(
                 "status", "deleted",
-                "user_id", userId);
+                "userId", userId);
         return jdbcTemplate.update(sql, param);
     }
 
-    public int modifyNickname(long userId, String nickname) {
-        String sql = "update users set nickname=:nickname where user_id=:user_id";
+    public int modifyUserName(long userId, String userName) {
+        String sql = "update users set userName=:userName where userId=:userId";
         Map<String, Object> param = Map.of(
-                "nickname", nickname,
-                "user_id", userId);
+                "userName", userName,
+                "userId", userId);
         return jdbcTemplate.update(sql, param);
     }
 
     public int modifyUser(long userId, PutUserRequest putUserRequest) {
-        String sql = "update users set email=:email, password=:password, phone_number=:phoneNumber, " +
-                "nickname=:nickname, profile_image=:profileImage where user_id=:userId";
+        String sql = "update users set email=:email, password=:password, phone=:phone, " +
+                "userName=:userName where userId=:userId";
 
         // PutUserRequest 객체에서 값을 추출하여 Map에 추가
         Map<String, Object> param = Map.of(
                 "email", putUserRequest.getEmail(),
                 "password", putUserRequest.getPassword(),
-                "phoneNumber", putUserRequest.getPhoneNumber(),
-                "nickname", putUserRequest.getNickname(),
-                "profileImage", putUserRequest.getProfileImage(),
+                "phone", putUserRequest.getPhone(),
+                "userName", putUserRequest.getUserName(),
                 "userId", userId
         );
 
         return jdbcTemplate.update(sql, param);
     }
 
-    public List<GetUserResponse> getUsers(String nickname, String email, String status) {
-        String sql = "select email, phone_number, nickname, profile_image, status from users " +
-                "where nickname like :nickname and email like :email and status=:status";
+    public List<GetUserResponse> getUsers(String userName, String email, String status) {
+        String sql = "select email, phone, userName, status from users " +
+                "where userName like :userName and email like :email and status=:status";
 
         Map<String, Object> param = Map.of(
-                "nickname", "%" + nickname + "%",
+                "userName", "%" + userName + "%",
                 "email", "%" + email + "%",
                 "status", status);
 
         return jdbcTemplate.query(sql, param,
                 (rs, rowNum) -> new GetUserResponse(
                         rs.getString("email"),
-                        rs.getString("phone_number"),
-                        rs.getString("nickname"),
-                        rs.getString("profile_image"),
+                        rs.getString("phone"),
+                        rs.getString("userName"),
                         rs.getString("status"))
         );
     }
 
     public long getUserIdByEmail(String email) {
-        String sql = "select user_id from users where email=:email and status='active'";
+        String sql = "select userId from users where email=:email and status='active'";
         Map<String, Object> param = Map.of("email", email);
         return jdbcTemplate.queryForObject(sql, param, long.class);
     }
 
 
     public String getPasswordByUserId(long userId) {
-        String sql = "select password from users where user_id=:user_id and status='active'";
-        Map<String, Object> param = Map.of("user_id", userId);
+        String sql = "select password from users where userId=:userId and status='active'";
+        Map<String, Object> param = Map.of("userId", userId);
         return jdbcTemplate.queryForObject(sql, param, String.class);
+    }
+
+    public void updateRefreshToken(long userId, String refreshToken) {
+        String sql = "update users set refreshToken = :refreshToken where userId = :userId";
+        Map<String, Object> params = Map.of("userId", userId, "refreshToken", refreshToken);
+        jdbcTemplate.update(sql, params);
+    }
+
+    public boolean isRefreshTokenValid(String refreshToken, long userId) {
+        String sql = "select count(*) from users where userId=:userId and refreshToken=:refreshToken and status='active'";
+        Map<String, Object> param = Map.of("userId", userId, "refreshToken", refreshToken);
+        Integer count = jdbcTemplate.queryForObject(sql, param, Integer.class);
+        return count != null && count > 0;
     }
 }

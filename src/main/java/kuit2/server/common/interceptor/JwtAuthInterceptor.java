@@ -7,7 +7,6 @@ import kuit2.server.common.exception.jwt.unauthorized.JwtInvalidTokenException;
 import kuit2.server.common.exception.jwt.bad_request.JwtNoTokenException;
 import kuit2.server.common.exception.jwt.bad_request.JwtUnsupportedTokenException;
 import kuit2.server.service.AuthService;
-import kuit2.server.service.UserService;
 import kuit2.server.util.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,8 +57,8 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
     }
 
     private void validateAccessToken(String accessToken) {
-        if (jwtProvider.isExpiredToken(accessToken)) {
-            throw new JwtExpiredTokenException(EXPIRED_TOKEN);
+        if (jwtProvider.isAccessTokenExpired(accessToken)) {
+            throw new JwtExpiredTokenException(EXPIRED_ACCESS_TOKEN);
         }
     }
 

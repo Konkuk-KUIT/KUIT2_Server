@@ -25,10 +25,16 @@ public class RestaurantService {
         return restaurantDao.getCategories();
     }
 
-    public List<GetStoreResponse> getStoresByCategory(String category) {
+    public List<GetStoreResponse> getStoresByCategoryV1(String category, int page, int size) {
         log.info("[RestaurantService.getStoresByCategory]");
 
-        return restaurantDao.getStoresByCategory(category);
+        return restaurantDao.getStoresByCategoryV1(category, page, size);
+    }
+
+    public List<GetStoreResponse> getStoresByCategoryV2(String category, Long lastStoreId, int size) {
+        log.info("[RestaurantService.getStoresByCategory]");
+
+        return restaurantDao.getStoresByCategoryV2(category, lastStoreId, size);
     }
 
     public List<GetStoreDetailResponse> getStore(String storeId) {

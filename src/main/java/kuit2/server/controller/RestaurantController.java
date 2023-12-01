@@ -28,15 +28,28 @@ public class RestaurantController {
         return new BaseResponse<>(restaurantService.getCategories());
     }
 
-    @GetMapping("/categories/{categoryId}")
-    public BaseResponse<List<GetStoreResponse>> getStoresByCategory(@RequestParam(required = false, defaultValue = "") String category) {
+    //@GetMapping("/categories/{categoryId}")
+    public BaseResponse<List<GetStoreResponse>> getStoresByCategoryV1(
+            @RequestParam(required = false, defaultValue = "") String category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         log.info("[RestaurantController.getStoresByCategory]");
 
-        return new BaseResponse<>(restaurantService.getStoresByCategory(category));
+        return new BaseResponse<>(restaurantService.getStoresByCategoryV1(category, page, size));
+    }
+
+    @GetMapping("/categories/{categoryId}")
+    public BaseResponse<List<GetStoreResponse>> getStoresByCategoryV2(
+            @RequestParam(required = false, defaultValue = "") String category,
+            @RequestParam(required = false) Long lastStoreId,
+            @RequestParam(defaultValue = "10") int size) {
+        log.info("[RestaurantController.getStoresByCategory]");
+
+        return new BaseResponse<>(restaurantService.getStoresByCategoryV2(category, lastStoreId, size));
     }
 
     @GetMapping("/{storeId}")
-    public BaseResponse<List<GetStoreDetailResponse>> getStore(@RequestParam(required = false, defaultValue = "") String storeId) {
+    public BaseResponse<List<GetStoreDetailResponse>> getStore(@RequestParam(required = false, defaultValue = "") String storeId, String lastId) {
         log.info("[RestaurantController.getStore]");
 
         return new BaseResponse<>(restaurantService.getStore(storeId));

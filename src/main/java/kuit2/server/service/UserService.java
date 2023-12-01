@@ -5,6 +5,7 @@ import kuit2.server.common.exception.UserException;
 import kuit2.server.dao.UserDao;
 import kuit2.server.dto.user.*;
 import kuit2.server.util.jwt.JwtProvider;
+import kuit2.server.util.jwt.Token;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,9 +29,9 @@ public class UserService {
 
         // TODO: 1. validation (중복 검사)
         validateEmail(postUserRequest.getEmail());
-        String nickname = postUserRequest.getNickname();
+        String nickname = postUserRequest.getUserName();
         if (nickname != null) {
-            validateNickname(postUserRequest.getNickname());
+            validateNickname(postUserRequest.getUserName());
         }
 
         // TODO: 2. password 암호화
@@ -41,9 +42,9 @@ public class UserService {
         long userId = userDao.createUser(postUserRequest);
 
         // TODO: 4. JWT 토큰 생성
-        String jwt = jwtProvider.createToken(postUserRequest.getEmail(), userId);
+        Token jwt = jwtProvider.createToken(postUserRequest.getEmail(), userId);
 
-        return new PostUserResponse(userId, jwt);
+        return new PostUserResponse(userId, jwt.getAccessToken(), jwt.getRefreshToken());
     }
 
     public void modifyUserStatus_dormant(long userId) {
@@ -64,11 +65,11 @@ public class UserService {
         }
     }
 
-    public void modifyNickname(long userId, String nickname) {
+    public void modifyNickname(long userId, String userName) {
         log.info("[UserService.modifyNickname]");
 
-        validateNickname(nickname);
-        int affectedRows = userDao.modifyNickname(userId, nickname);
+        validateNickname(userName);
+        int affectedRows = userDao.modifyUserName(userId, userName);
         if (affectedRows != 1) {
             throw new DatabaseException(DATABASE_ERROR);
         }
@@ -79,9 +80,9 @@ public class UserService {
 
         // TODO: 1. validation (중복 검사)
         validateEmail(putUserRequest.getEmail());
-        String nickname = putUserRequest.getNickname();
+        String nickname = putUserRequest.getUserName();
         if (nickname != null) {
-            validateNickname(putUserRequest.getNickname());
+            validateNickname(putUserRequest.getUserName());
         }
 
         // TODO: 2. password 암호화
@@ -89,9 +90,9 @@ public class UserService {
         putUserRequest.resetPassword(encodedPassword);
 
         // TODO: 3. JWT 토큰 생성
-        String jwt = jwtProvider.createToken(putUserRequest.getEmail(), userId);
+        Token jwt = jwtProvider.createToken(putUserRequest.getEmail(), userId);
 
-        return new PutUserResponse(userId, jwt);
+        return new PutUserResponse(userId, jwt.getAccessToken());
     }
 
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
@@ -106,7 +107,7 @@ public class UserService {
     }
 
     private void validateNickname(String nickname) {
-        if (userDao.hasDuplicateNickName(nickname)) {
+        if (userDao.hasDuplicateUserName(nickname)) {
             throw new UserException(DUPLICATE_NICKNAME);
         }
     }

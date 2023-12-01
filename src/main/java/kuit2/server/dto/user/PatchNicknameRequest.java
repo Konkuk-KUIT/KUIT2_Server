@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PatchNicknameRequest {
 
-    @NotNull(message = "nickname: {NotNull}")
-    private String nickname;
+    @NotNull(message = "userName: {NotNull}")
+    private String userName;
 
 }
