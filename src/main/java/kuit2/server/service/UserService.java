@@ -3,6 +3,7 @@ package kuit2.server.service;
 import kuit2.server.common.exception.DatabaseException;
 import kuit2.server.common.exception.UserException;
 import kuit2.server.dao.UserDao;
+import kuit2.server.dto.store.GetUserOrderListResponse;
 import kuit2.server.dto.user.*;
 import kuit2.server.util.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import static kuit2.server.common.response.status.BaseExceptionResponseStatus.*;
 
@@ -32,7 +34,6 @@ public class UserService {
         if (nickname != null) {
             validateNickname(postUserRequest.getNickname());
         }
-
         // TODO: 2. password 암호화
         String encodedPassword = passwordEncoder.encode(postUserRequest.getPassword());
         postUserRequest.resetPassword(encodedPassword);
@@ -42,6 +43,9 @@ public class UserService {
 
         // TODO: 4. JWT 토큰 생성
         String jwt = jwtProvider.createToken(postUserRequest.getEmail(), userId);
+
+        // 5. jwt 토큰 저장
+        userDao.saveJWT(userId, jwt);
 
         return new PostUserResponse(userId, jwt);
     }
@@ -89,5 +93,22 @@ public class UserService {
         if (userDao.hasDuplicateNickName(nickname)) {
             throw new UserException(DUPLICATE_NICKNAME);
         }
+    }
+
+    public List<GetUserJjimResponse> getUserJjim(long userId) {
+        log.info("[UserService.getUserJjim]");
+        return userDao.getUserJjim(userId);
+    }
+
+    public PostUserAddressResponse addAddress(long userId,PostUserAddressRequest postUserAddressRequest) {
+        log.info("[UserService.addAddress]");
+        long addressId = userDao.addAddress(userId, postUserAddressRequest);
+
+        return new PostUserAddressResponse(addressId);
+    }
+
+    public List<GetUserOrderListResponse> getOrders(long userId) {
+        log.info("[UserService.getOrders]");
+        return userDao.getOrders(userId);
     }
 }

@@ -11,8 +11,12 @@ import kuit2.server.service.UserService;
 import kuit2.server.util.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import static kuit2.server.common.response.status.BaseExceptionResponseStatus.*;
@@ -32,11 +36,14 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
         log.info("[JwtAuthInterceptor.preHandle]");
 
         String accessToken = resolveAccessToken(request);
+        //log.info("here"+accessToken);
         validateAccessToken(accessToken);
+
+        log.info(accessToken);
 
         String email = jwtProvider.getPrincipal(accessToken);
         validatePayload(email);
-
+        log.info(email);
         long userId = authService.getUserIdByEmail(email);
         request.setAttribute("userId", userId);
         return true;
