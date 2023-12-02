@@ -1,8 +1,6 @@
 package kuit2.server.dto.user;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +16,9 @@ public class PostUserRequest {
     @NotBlank(message = "email: {NotBlank}")
     @Length(max = 50, message = "email: 최대 {max}자리까지 가능합니다")
     private String email;
+
+    @NotBlank(message = "user_id : {NotBlank}")
+    private String user_id;
 
     @NotBlank(message = "password: {NotBlank}")
     @Length(min = 8, max = 20,

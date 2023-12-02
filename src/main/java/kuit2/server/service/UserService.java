@@ -2,11 +2,14 @@ package kuit2.server.service;
 
 import kuit2.server.common.exception.DatabaseException;
 import kuit2.server.common.exception.UserException;
+import kuit2.server.common.response.status.BaseExceptionResponseStatus;
 import kuit2.server.dao.UserDao;
+import kuit2.server.dto.auth.LoginRequest;
 import kuit2.server.dto.user.*;
 import kuit2.server.util.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -89,5 +92,21 @@ public class UserService {
         if (userDao.hasDuplicateNickName(nickname)) {
             throw new UserException(DUPLICATE_NICKNAME);
         }
+    }
+    public PostLoginResponse login(PostLoginRequest loginRequest) {
+        Long userId;
+        try {
+            userId = userDao.getUserIdByEmail(loginRequest.getEmail());
+        } catch (EmptyResultDataAccessException e) {
+            throw new UserException(BaseExceptionResponseStatus.EMAIL_NOT_FOUND, "No user found with this email.");
+        }
+
+        String storedPassword = userDao.getPasswordByUserId(userId);
+        if (!passwordEncoder.matches(loginRequest.getPassword(), storedPassword)) {
+            throw new UserException(BaseExceptionResponseStatus.PASSWORD_NO_MATCH, "Password does not match.");
+        }
+
+        String jwt = jwtProvider.createToken(loginRequest.getEmail(), userId);
+        return new PostLoginResponse(userId, jwt);
     }
 }
