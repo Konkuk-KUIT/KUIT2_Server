@@ -1,6 +1,7 @@
 package kuit2.server.controller;
 
 import kuit2.server.common.response.BaseResponse;
+import kuit2.server.dto.store.GetStoreListResponse;
 import kuit2.server.dto.store.GetStoreRequest;
 import kuit2.server.dto.store.GetStoreResponse;
 import kuit2.server.service.StoreService;
@@ -22,12 +23,20 @@ public class StoreController {
 
     @GetMapping("")
     public BaseResponse<List<GetStoreResponse>> getStores(@Validated @RequestBody GetStoreRequest getStoreRequest,
-                                                    BindingResult bindingResult) {
+                                                          BindingResult bindingResult) {
         log.info("[StoreController.getStores]");
         List<GetStoreResponse> stores = storeService.getStores(getStoreRequest.getName(), getStoreRequest.getCategory(),
                 getStoreRequest.getMinDeliveryPrice(), getStoreRequest.getStatus());
 
         log.info(stores.toString());
         return new BaseResponse<>(stores);
+    }
+
+    @GetMapping("/list")
+    public BaseResponse<List<GetStoreResponse>> getStoreList(@RequestParam(defaultValue = "0") Long lastId) {
+        log.info("[StoreController.getStoreList]");
+
+        GetStoreListResponse storeList = storeService.getStoreList(lastId);
+        return new BaseResponse(storeList);
     }
 }
