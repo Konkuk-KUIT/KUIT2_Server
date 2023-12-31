@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### AWS Key Pair ###
+*.pem
+
+### 맥 기본 파일 ###
+*.DS_Store
