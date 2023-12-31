@@ -1,5 +1,6 @@
 package kuit2.server.dto.auth;
 
+import kuit2.server.util.jwt.JwtInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,6 +9,6 @@ import lombok.Getter;
 public class LoginResponse {
 
     private long userId;
-    private String jwt;
+    private JwtInfo jwtInfo;
 
 }

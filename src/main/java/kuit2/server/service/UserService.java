@@ -4,6 +4,7 @@ import kuit2.server.common.exception.DatabaseException;
 import kuit2.server.common.exception.UserException;
 import kuit2.server.dao.UserDao;
 import kuit2.server.dto.user.*;
+import kuit2.server.util.jwt.JwtInfo;
 import kuit2.server.util.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,9 +42,9 @@ public class UserService {
         long userId = userDao.createUser(postUserRequest);
 
         // TODO: 4. JWT 토큰 생성
-        String jwt = jwtProvider.createToken(postUserRequest.getEmail(), userId);
+        JwtInfo jwtInfo = jwtProvider.createToken(postUserRequest.getEmail(), userId);
 
-        return new PostUserResponse(userId, jwt);
+        return new PostUserResponse(userId, jwtInfo);
     }
 
     public void modifyUserStatus_dormant(long userId) {
