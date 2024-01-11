@@ -48,6 +48,8 @@ public class AuthService {
 
     private void validatePassword(String password, long userId) {
         String encodedPassword = userDao.getPasswordByUserId(userId);
+        System.out.println("password = " + password);
+        System.out.println("encodedPassword = " + encodedPassword);
         if (!passwordEncoder.matches(password, encodedPassword)) {
             throw new UserException(PASSWORD_NO_MATCH);
         }
