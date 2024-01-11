@@ -1,11 +1,16 @@
 package kuit2.server.controller;
 
+import kuit2.server.common.exception.DatabaseException;
 import kuit2.server.common.exception.UserException;
 import kuit2.server.common.response.BaseResponse;
+import kuit2.server.dto.auth.LoginRequest;
+import kuit2.server.dto.auth.LoginResponse;
 import kuit2.server.dto.user.*;
 import kuit2.server.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -83,5 +88,11 @@ public class UserController {
             throw new UserException(INVALID_USER_STATUS);
         }
         return new BaseResponse<>(userService.getUsers(nickname, email, status));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<PostLoginResponse> login(@RequestBody PostLoginRequest loginRequest) {
+        PostLoginResponse loginResponse = userService.login(loginRequest);
+        return ResponseEntity.ok(loginResponse);
     }
 }

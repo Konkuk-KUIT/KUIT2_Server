@@ -38,8 +38,8 @@ public class UserDao {
     }
 
     public long createUser(PostUserRequest postUserRequest) {
-        String sql = "insert into user(email, password, phone_number, nickname, profile_image) " +
-                "values(:email, :password, :phoneNumber, :nickname, :profileImage)";
+        String sql = "insert into user(name, email, password, phoneNumber, nickname, profile_image) " +
+                "values(:name, :email, :password, :phoneNumber, :nickname, :profileImage)";
 
         SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -84,7 +84,7 @@ public class UserDao {
         return jdbcTemplate.query(sql, param,
                 (rs, rowNum) -> new GetUserResponse(
                         rs.getString("email"),
-                        rs.getString("phone_number"),
+                        rs.getString("phoneNumber"),
                         rs.getString("nickname"),
                         rs.getString("profile_image"),
                         rs.getString("status"))
